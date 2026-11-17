@@ -1,0 +1,14 @@
+baseURL = "https://YOUR-USER.github.io/YOUR-REPO/"   # со своим доменом: "https://romaha.dev/"
+languageCode = "en"
+title = "Romaha Dev Agency"
+disableKinds = ["taxonomy", "term", "RSS", "section"]
+enableRobotsTXT = true
+timeout = "60s"
+
+[minify]
+  minifyOutput = true
+
+[params.firebase]
+  # публичные значения — безопасно держать в репозитории; доступ ограничивают firestore.rules
+  projectId = "YOUR_FIREBASE_PROJECT_ID"
+  apiKey    = "YOUR_WEB_API_KEY"
