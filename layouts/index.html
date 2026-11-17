@@ -1,0 +1,13 @@
+{{ define "main" }}
+{{ partial "takeovers.html" . }}
+
+<div id="scroll-container">
+  {{ partial "hero.html" . }}
+  {{ range (partial "data.html" (dict "name" "sections" "lang" site.Language.Lang)) }}
+    {{ partial "section.html" . }}
+  {{ end }}
+  {{ partial "footer.html" . }}
+</div>
+
+{{ partial "contact.html" . }}
+{{ end }}
