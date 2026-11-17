@@ -1,0 +1,14 @@
+{{ define "main" }}
+<main id="main" class="page page--insights-list">
+  <header class="page__head">
+    <h1 class="page__title">{{ .Title }}</h1>
+    {{ with .Description }}<p class="page__lead">{{ . }}</p>{{ end }}
+  </header>
+
+  {{/* TODO(дизайн): список статей блога */}}
+  <ul class="page__list">
+    {{ range .Pages }}<li><a href="{{ partial "rurl.html" . }}">{{ .Title }}</a></li>
+    {{ end }}
+  </ul>
+</main>
+{{ end }}
