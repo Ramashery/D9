@@ -1,0 +1,13 @@
+{{ define "main" }}
+<main id="main" class="page page--service">
+  <article>
+    <header class="page__head">
+      <h1 class="page__title">{{ .Title }}</h1>
+      {{ with .Description }}<p class="page__lead">{{ . }}</p>{{ end }}
+    </header>
+
+    {{/* TODO(дизайн): страница услуги */}}
+    <div class="page__content">{{ .Content }}</div>
+  </article>
+</main>
+{{ end }}
