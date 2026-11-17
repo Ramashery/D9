@@ -1,0 +1,5 @@
+{{- $d := partial "data.html" (dict "name" "home" "lang" site.Language.Lang) -}}
+<footer class="site-footer">
+  <p>© {{ now.Year }} {{ $d.org.name }} · {{ i18n "all_rights" }}</p>
+  <p><a href="mailto:{{ $d.contacts.email }}">{{ $d.contacts.email }}</a></p>
+</footer>

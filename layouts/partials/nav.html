@@ -1,0 +1,78 @@
+{{- /* Верхняя панель + полноэкранное меню (одно на все страницы и языки) */ -}}
+{{- $page := . -}}
+{{- $d := partial "data.html" (dict "name" "home" "lang" site.Language.Lang) -}}
+{{- $c := $d.contacts -}}
+{{- $cur := partial "rurl.html" $page -}}
+{{- $items := slice
+      (dict "key" "nav_home"     "page" site.Home)
+      (dict "key" "nav_works"    "page" (site.GetPage "/works"))
+      (dict "key" "nav_services" "page" (site.GetPage "/services"))
+      (dict "key" "nav_insights" "page" (site.GetPage "/insights"))
+      (dict "key" "nav_about"    "page" (site.GetPage "/about")) -}}
+
+<nav class="mn-nav" aria-label="{{ i18n "nav_label" }}">
+  <a href="{{ partial "rurl.html" site.Home }}" class="mn-nav__logo" aria-label="{{ $d.logo.alt }}">
+    <img src="{{ $d.logo.url }}" alt="{{ $d.logo.alt }}" decoding="async" fetchpriority="high">
+  </a>
+  <button type="button" class="mn-btn" id="mnOpen" aria-expanded="false" aria-controls="mnMenu">{{ i18n "menu" }}</button>
+</nav>
+
+<div class="mn-menu" id="mnMenu" role="dialog" aria-modal="true" aria-label="{{ i18n "nav_label" }}">
+  <div class="mn-menu__bg" aria-hidden="true"></div>
+
+  <div class="mn-menu__inner">
+    <div class="mn-menu__top">
+      <a href="{{ partial "rurl.html" site.Home }}" class="mn-menu__logo" aria-label="{{ $d.logo.alt }}">
+        <img src="{{ $d.logo.url }}" alt="{{ $d.logo.alt }}" decoding="async" loading="lazy">
+      </a>
+
+      {{/* переключатель языков: ведёт на ту же страницу на другом языке, а если перевода нет — на главную */}}
+      <div class="mn-lang" role="group" aria-label="{{ i18n "language" }}">
+        {{- range site.Languages }}
+          {{- $lang := .Lang -}}
+          {{- $target := "" -}}
+          {{- range $page.AllTranslations }}{{ if eq .Language.Lang $lang }}{{ $target = . }}{{ end }}{{ end -}}
+          {{- if not $target }}{{ range site.Home.AllTranslations }}{{ if eq .Language.Lang $lang }}{{ $target = . }}{{ end }}{{ end }}{{ end -}}
+          {{- if $target }}
+          <a href="{{ partial "rurl.html" $target }}" class="mn-btn mn-lang__item{{ if eq $lang site.Language.Lang }} is-active{{ end }}" hreflang="{{ $lang }}" lang="{{ $lang }}" data-lang="{{ $lang }}"{{ if eq $lang site.Language.Lang }} aria-current="true"{{ end }}>{{ $lang }}</a>
+          {{- end }}
+        {{- end }}
+      </div>
+
+      <button type="button" class="mn-btn" id="mnClose">{{ i18n "close" }}</button>
+    </div>
+
+    <div class="mn-menu__bottom">
+      <div class="mn-menu__left">
+        <header class="mn-menu__header">
+          <p class="mn-text">{{ i18n "pages" }}</p>
+          <span class="mn-menu__line"></span>
+        </header>
+        <ul>
+          {{- range $i, $it := $items }}
+            {{- with $it.page }}
+              {{- $u := partial "rurl.html" . -}}
+              {{- $active := or (eq $cur $u) (and (ne $it.key "nav_home") (strings.HasPrefix $cur (print $u "/"))) }}
+          <li style="--i:{{ $i }}"><a href="{{ $u }}"{{ if $active }} class="is-active" aria-current="page"{{ end }}>{{ i18n $it.key }}</a></li>
+            {{- end }}
+          {{- end }}
+        </ul>
+      </div>
+
+      <div class="mn-menu__right">
+        <div class="mn-menu__item">
+          <header class="mn-menu__header">
+            <p class="mn-text">{{ i18n "contacts" }}</p>
+            <span class="mn-menu__line"></span>
+          </header>
+          <ul>
+            <li style="--i:{{ len $items }}"><a href="{{ $c.telegram }}" target="_blank" rel="noopener">Telegram</a></li>
+            <li style="--i:{{ add (len $items) 1 }}"><a href="{{ $c.whatsapp }}" target="_blank" rel="noopener">WhatsApp</a></li>
+            <li style="--i:{{ add (len $items) 2 }}"><a href="{{ $c.phone_href }}">{{ $c.phone }}</a></li>
+            <li style="--i:{{ add (len $items) 3 }}"><a href="mailto:{{ $c.email }}">{{ $c.email }}</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

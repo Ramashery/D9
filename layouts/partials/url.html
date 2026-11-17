@@ -1,0 +1,2 @@
+{{- /* Абсолютный URL страницы без слэша на конце и без .html:  https://site/en/works */ -}}
+{{- return (.Permalink | strings.TrimSuffix ".html" | strings.TrimSuffix "/index" | strings.TrimSuffix "/") -}}

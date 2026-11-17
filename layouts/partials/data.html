@@ -1,0 +1,7 @@
+{{- /* Данные текущего языка: data/<lang>/<name>.json, иначе запасной data/en/<name>.json.
+       Пока ka/ru не переведены, главная показывает английские тексты. */ -}}
+{{- $name := .name -}}
+{{- $d := "" -}}
+{{- with index site.Data .lang -}}{{- with index . $name -}}{{- $d = . -}}{{- end -}}{{- end -}}
+{{- if not $d -}}{{- $d = index (index site.Data "en") $name -}}{{- end -}}
+{{- return $d -}}

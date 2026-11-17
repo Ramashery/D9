@@ -1,0 +1,2 @@
+{{- /* То же, но относительный (с учётом подпапки baseURL):  /D9/en/works */ -}}
+{{- return (.RelPermalink | strings.TrimSuffix ".html" | strings.TrimSuffix "/index" | strings.TrimSuffix "/") -}}
