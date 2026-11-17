@@ -1,0 +1,28 @@
+[menu]
+other = "menu"
+[close]
+other = "close"
+[nav_label]
+other = "Main navigation"
+[pages]
+other = "Pages"
+[contacts]
+other = "Contacts"
+[language]
+other = "Language"
+[nav_home]
+other = "Home"
+[nav_works]
+other = "Works"
+[nav_services]
+other = "Services"
+[nav_insights]
+other = "Insights"
+[nav_about]
+other = "About"
+[all_rights]
+other = "All rights reserved"
+[not_found]
+other = "Page not found"
+[back_home]
+other = "Back to home"
