@@ -1,0 +1,35 @@
+baseURL = "https://YOUR-USER.github.io/YOUR-REPO/"   # со своим доменом: "https://romaha.dev/"
+title = "Romaha Dev Agency"
+timeout = "60s"
+enableRobotsTXT = true
+disableKinds = ["taxonomy", "term", "RSS"]
+
+# ---- структура URL: /en, /en/works, /en/works/case — без слэша на конце
+defaultContentLanguage = "en"
+defaultContentLanguageInSubdir = true
+uglyURLs = true              # файлы dir.html вместо dir/index.html; ссылки печатаются без ".html" (partials/url.html)
+
+[languages]
+  [languages.en]
+    languageName = "English"
+    weight = 1
+    contentDir = "content/en"
+    title = "Romaha Dev Agency"
+  [languages.ka]
+    languageName = "ქართული"
+    weight = 2
+    contentDir = "content/ka"
+    title = "Romaha Dev Agency"
+  [languages.ru]
+    languageName = "Русский"
+    weight = 3
+    contentDir = "content/ru"
+    title = "Romaha Dev Agency"
+
+[minify]
+  minifyOutput = true
+
+[params.firebase]
+  # публичные значения — безопасно держать в репозитории; доступ ограничивают firestore.rules
+  projectId = "YOUR_FIREBASE_PROJECT_ID"
+  apiKey    = "YOUR_WEB_API_KEY"
