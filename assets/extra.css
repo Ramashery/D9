@@ -1,0 +1,7 @@
+/* дополнения к исходному дизайну (форма → Firestore) */
+.contact-hp{ position:absolute !important; left:-9999px; width:1px; height:1px; opacity:0; pointer-events:none; }
+.contact-panel__status{ min-height:1.4em; margin:14px 0 0; font-size:.8rem; letter-spacing:.02em; color:var(--accent); }
+.contact-panel__status.is-error{ color:#ff8c7a; }
+.contact-panel__submit:disabled{ opacity:.5; cursor:progress; }
+/* видео без src не должны давать белую/серую вспышку до загрузки */
+video[data-src]{ background:#000; }
