@@ -1,0 +1,9 @@
+{{ define "main" }}
+<main id="main" class="page page--404">
+  <header class="page__head">
+    <h1 class="page__title">404</h1>
+    <p class="page__lead">{{ i18n "not_found" }}</p>
+  </header>
+  <p><a href="{{ partial "rurl.html" site.Home }}">{{ i18n "back_home" }}</a></p>
+</main>
+{{ end }}
