@@ -1,0 +1,16 @@
+/* Лёгкая база для внутренних страниц (Works / Services / Insights / About).
+   Главная использует main.css — там тяжёлый дизайн с собственным скроллом. */
+:root{
+  --bg:#000; --ink:#f3f1ec; --ink-dim:rgba(243,241,236,.6); --ink-faint:rgba(243,241,236,.34);
+  --accent:#7fa6c2; --line:rgba(243,241,236,.16); --line-strong:rgba(243,241,236,.28);
+  --type:'Neue Montreal','Inter','Helvetica Neue',Arial,sans-serif;
+  --display:'Inter','Helvetica Neue',Arial,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --gutter:clamp(20px,5vw,64px);
+}
+*,*::before,*::after{ box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; }
+body{ margin:0; background:var(--bg); color:var(--ink); font-family:var(--type); font-weight:400; line-height:1.5; -webkit-font-smoothing:antialiased; min-height:100vh; display:flex; flex-direction:column; }
+img,video{ max-width:100%; display:block; }
+a{ color:inherit; }
+.sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }

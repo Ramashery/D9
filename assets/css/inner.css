@@ -1,0 +1,12 @@
+/* Стили-заглушки внутренних страниц. Заменяйте по мере появления дизайна. */
+.page{ flex:1; width:100%; max-width:1280px; margin:0 auto; padding:clamp(96px,14vh,160px) var(--gutter) 80px; }
+.page__title{ font-family:var(--display); font-weight:800; font-size:clamp(40px,7vw,104px); line-height:1; letter-spacing:-.035em; margin:0 0 .3em; }
+.page__lead{ color:var(--ink-dim); font-size:clamp(16px,1.6vw,22px); max-width:60ch; margin:0 0 2.5rem; }
+.page__list{ list-style:none; margin:0; padding:0; border-top:1px solid var(--line); }
+.page__list li{ border-bottom:1px solid var(--line); }
+.page__list a{ display:block; padding:1rem 0; font-size:clamp(20px,2.4vw,32px); font-weight:600; text-decoration:none; }
+.page__list a:hover{ color:var(--accent); }
+.page__content{ max-width:70ch; font-size:18px; }
+.page__content :where(p,ul,ol){ margin:0 0 1em; }
+.site-footer{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px; padding:24px var(--gutter); border-top:1px solid var(--line); color:var(--ink-dim); font-size:14px; }
+.site-footer p{ margin:0; }
