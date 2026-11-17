@@ -1,0 +1,52 @@
+name: Build & Deploy
+
+on:
+  push: { branches: [main] }
+  workflow_dispatch:
+  repository_dispatch: { types: [firestore-updated] }   # дергает Cloud Function при правке контента
+  schedule: [{ cron: '17 3 * * *' }]                     # страховка: раз в сутки
+
+permissions: { contents: read, pages: write, id-token: write }
+concurrency: { group: pages, cancel-in-progress: true }
+
+env:
+  HUGO_VERSION: '0.139.0'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with: { go-version: '1.22', cache: false }
+
+      - name: Firestore → data/*.json
+        working-directory: scripts/firestore-sync
+        env:
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_SA_JSON: ${{ secrets.FIREBASE_SA_JSON }}   # можно не задавать, если правила разрешают публичное чтение
+        run: go run .
+
+      - uses: peaceiris/actions-hugo@v3
+        with: { hugo-version: '${{ env.HUGO_VERSION }}', extended: true }
+
+      - id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Hugo build
+        run: hugo --minify --gc --destination _site --baseURL "${{ steps.pages.outputs.base_url }}/"
+
+      - name: Post-process (URL без слэша, корневой редирект)
+        run: bash scripts/postbuild.sh _site "${{ steps.pages.outputs.base_path }}" "en ka ru" en
+
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: _site }
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: { name: github-pages, url: '${{ steps.d.outputs.page_url }}' }
+    steps:
+      - id: d
+        uses: actions/deploy-pages@v4
