@@ -1,0 +1,14 @@
+{{ define "main" }}
+{{ partial "topbar.html" . }}
+{{ partial "takeovers.html" . }}
+
+<div id="scroll-container">
+  {{ partial "hero.html" . }}
+  {{ range site.Data.sections }}
+    {{ partial "section.html" . }}
+  {{ end }}
+  {{ partial "footer.html" . }}
+</div>
+
+{{ partial "contact.html" . }}
+{{ end }}
