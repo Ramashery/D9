@@ -1,0 +1,17 @@
+{{ range (partial "data.html" (dict "name" "sections" "lang" site.Language.Lang)) }}
+{{ $t := .takeover }}
+<div class="sq-takeover" data-sq-for="{{ .id }}" aria-hidden="true">
+  {{ partial "lazyvideo.html" (dict "src" $t.video "class" "sq-takeover__video" "for" .id) }}
+  <div class="sq-takeover__dim"></div>
+  <div class="sq-col">
+    <span class="sq-col__num">{{ $t.num }}</span>
+    <h3 class="sq-col__title">{{ range $t.title_lines }}<span class="sq-t{{ if .accent }} sq-t--a{{ end }}">{{ .text }}</span>{{ end }}</h3>
+    <p class="sq-col__text">{{ $t.text }}</p>
+    <i class="sq-rule"></i>
+    <ul class="sq-col__list">
+      {{ range $t.items }}<li class="sq-it"><i>+</i>{{ . }}</li>
+      {{ end }}
+    </ul>
+  </div>
+</div>
+{{ end }}

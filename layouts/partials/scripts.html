@@ -1,0 +1,10 @@
+{{ $files := slice }}
+{{ $target := "js/page.js" }}
+{{ if .IsHome }}
+  {{ $files = slice (resources.Get "js/engine.js") (resources.Get "js/textanim.js") (resources.Get "js/lazymedia.js") (resources.Get "js/contact.js") (resources.Get "js/hero.js") (resources.Get "js/menu.js") }}
+  {{ $target = "js/home.js" }}
+{{ else }}
+  {{ $files = slice (resources.Get "js/menu.js") }}
+{{ end }}
+{{ $js := $files | resources.Concat $target | minify | fingerprint }}
+<script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>

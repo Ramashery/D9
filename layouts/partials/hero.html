@@ -1,0 +1,15 @@
+{{- $h := (partial "data.html" (dict "name" "home" "lang" site.Language.Lang)) -}}
+<header class="hero" id="top" aria-label="{{ $h.org.name }}">
+  <h1 class="sr">{{ $h.hero.h1 }}</h1>
+  <div class="stage" id="stage" data-index="0" aria-hidden="true">
+    <div class="vw">
+      <div class="vs">
+        {{/* единственное видео, которое грузится сразу — оно в первом экране */}}
+        <video id="bgVideo" muted playsinline preload="auto" src="{{ $h.hero.video }}"></video>
+      </div>
+    </div>
+    <div class="scrim"></div>
+    <div class="cv" id="cv"></div>
+    <div class="ov" id="ov"><div class="rc"></div></div>
+  </div>
+</header>
