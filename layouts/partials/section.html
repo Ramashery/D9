@@ -1,0 +1,58 @@
+{{- $id := .id -}}
+{{- $c := .cards -}}
+{{- $acc := .accent_videos -}}
+<section class="section{{ if .tone }} section--tone{{ end }} has-reveal" id="{{ $id }}">
+  <div class="wrap">
+    <div class="section__head">
+      <span class="section__index">{{ .index_label }}</span>
+      <h2 class="section__title">{{ .title }}</h2>
+    </div>
+
+    <div class="dossier dossier--{{ $id }}">
+      <div class="section-reveal" aria-hidden="true">
+        <div class="section-reveal__scale"><div class="media-window__frame section-reveal__frame">
+          {{ partial "lazyvideo.html" (dict "src" .reveal_video "class" "media-window__video section-reveal__video" "cors" true "autoplay" true) }}
+        </div></div>
+      </div>
+
+      <div class="dossier__label">
+        <b class="" style="text-transform:uppercase;">{{ .label_bold }}</b>
+        <span class="dossier__label-text" style="text-transform:uppercase;">{{ .label_text }}</span>
+      </div>
+
+      {{ with index $c 0 }}
+      <div class="card ga-card1">
+        <span class="card__num">{{ .num }}</span>
+        <h3 class="card__title">{{ .title }}</h3>
+        <p class="card__text">{{ .text }}</p>
+      </div>
+      {{ end }}
+
+      <div class="media-accent media-accent--left" data-progress data-progress-var="--progress-left" data-progress-finish="38" data-parallax>
+        <div class="media-window__frame">{{ partial "lazyvideo.html" (dict "src" (index $acc 0) "class" "media-window__video" "autoplay" true) }}</div>
+      </div>
+      <div class="media-accent media-accent--right" data-progress data-progress-var="--progress-right" data-progress-finish="0" data-parallax>
+        <div class="media-window__frame">{{ partial "lazyvideo.html" (dict "src" (index $acc 1) "class" "media-window__video" "autoplay" true) }}</div>
+      </div>
+
+      {{ with index $c 1 }}
+      <div class="card ga-card2">
+        <span class="card__num">{{ .num }}</span>
+        <h3 class="card__title">{{ .title }}</h3>
+        <p class="card__text">{{ .text }}</p>
+      </div>
+      {{ end }}
+      {{ with index $c 2 }}
+      <div class="card ga-card3">
+        <span class="card__num">{{ .num }}</span>
+        <h3 class="card__title">{{ .title }}</h3>
+        <p class="card__text">{{ .text }}</p>
+      </div>
+      {{ end }}
+
+      <figure class="media-block" data-progress data-progress-var="--progress-square" data-progress-finish="11" data-parallax>
+        <div class="media-window__frame">{{ partial "lazyvideo.html" (dict "src" .square_video "class" "media-window__video" "autoplay" true) }}</div>
+      </figure>
+    </div>
+  </div>
+</section>

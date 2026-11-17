@@ -1,0 +1,2 @@
+{{- /* ctx: dict "src" "class" "cors" bool "for" (id секции) "autoplay" bool */ -}}
+<video class="{{ .class }}"{{ if .cors }} crossorigin="anonymous"{{ end }} muted loop playsinline preload="none" data-src="{{ .src }}"{{ with .for }} data-lazy-for="{{ . }}"{{ end }}{{ if .autoplay }} data-autoplay{{ end }}></video>
