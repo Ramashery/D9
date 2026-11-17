@@ -1,0 +1,165 @@
+[
+  {
+    "id": "services",
+    "index_label": "(01_SERVICES)",
+    "title": "What we build",
+    "tone": false,
+    "label_bold": "Core capabilities",
+    "label_text": "Full-stack delivery, from first sketch to indexed, ranking page.",
+    "cards": [
+      {
+        "num": "01",
+        "title": "Custom Web Development",
+        "text": "From lightning-fast landing pages to full-scale web applications, we craft clean, scalable, and secure web solutions tailored specifically to your business goals."
+      },
+      {
+        "num": "02",
+        "title": "UI/UX & Web Design",
+        "text": "We design modern, interactive interfaces that deliver smooth user journeys, reflect your brand identity, and maximize user conversion rates."
+      },
+      {
+        "num": "03",
+        "title": "Search Engine Optimization",
+        "text": "Dominating local and international search results with robust technical SEO, page-speed performance engineering, and strategic keyword optimization."
+      }
+    ],
+    "accent_videos": [
+      "https://raw.githubusercontent.com/Ramashery/Dev3/refs/heads/main/video/b1.mp4",
+      "https://raw.githubusercontent.com/Ramashery/Dev3/refs/heads/main/video/b11.mp4"
+    ],
+    "reveal_video": "https://raw.githubusercontent.com/Ramashery/Dev3/refs/heads/main/video/b13.mp4",
+    "square_video": "https://raw.githubusercontent.com/Ramashery/Dev3/refs/heads/main/video/g1.mp4",
+    "takeover": {
+      "num": "(04)",
+      "video": "https://raw.githubusercontent.com/Ramashery/Dev3/refs/heads/main/video/g1.mp4",
+      "title_lines": [
+        {
+          "text": "Launch,",
+          "accent": false
+        },
+        {
+          "text": "Care &",
+          "accent": false
+        },
+        {
+          "text": "Growth",
+          "accent": true
+        }
+      ],
+      "text": "Going live is the starting line, not the finish. We host, monitor and protect your site, then keep improving its speed, rankings and conversions month after month.",
+      "items": [
+        "Managed hosting, backups and security updates",
+        "Analytics, reporting and A/B testing",
+        "Ongoing SEO and page-speed tuning",
+        "Priority support on Telegram and WhatsApp"
+      ]
+    },
+    "order": 1
+  },
+  {
+    "id": "why",
+    "index_label": "(02_WHY.ROMAHA)",
+    "title": "Why Romaha Dev Agency",
+    "tone": true,
+    "label_bold": "Positioning",
+    "label_text": "Local insight, engineered to a global standard.",
+    "cards": [
+      {
+        "num": "01",
+        "title": "Local Heart, Global Quality",
+        "text": "Based in Tbilisi, Georgia, we bring together deep local market understanding and world-class digital standards to help your business stand out in competitive markets."
+      },
+      {
+        "num": "02",
+        "title": "Built for Speed and Scalability",
+        "text": "We skip bloated templates in favor of lightweight, custom architecture. Your site loads instantly, performs flawlessly on mobile, and ranks higher on Google."
+      },
+      {
+        "num": "03",
+        "title": "Results-Driven Approach",
+        "text": "A modern site must produce tangible results. Every layout, call-to-action, and line of code is engineered to increase engagement and drive revenue."
+      }
+    ],
+    "accent_videos": [
+      "https://raw.githubusercontent.com/Ramashery/Dev3/refs/heads/main/video/b3.mp4",
+      "https://raw.githubusercontent.com/Ramashery/Dev3/refs/heads/main/video/d16.mp4"
+    ],
+    "reveal_video": "https://raw.githubusercontent.com/Ramashery/Dev3/refs/heads/main/video/v12.mp4",
+    "square_video": "https://raw.githubusercontent.com/Ramashery/Dev3/refs/heads/main/video/v1.mp4",
+    "takeover": {
+      "num": "(04)",
+      "video": "https://raw.githubusercontent.com/Ramashery/Dev3/refs/heads/main/video/v1.mp4",
+      "title_lines": [
+        {
+          "text": "Straight Talk,",
+          "accent": false
+        },
+        {
+          "text": "Fair Terms",
+          "accent": true
+        }
+      ],
+      "text": "No agency fog. You get one point of contact, honest timelines and a fixed scope, so you always know what is being built, what it costs and when it ships.",
+      "items": [
+        "A fixed quote before any work starts",
+        "Weekly progress updates, in plain language",
+        "You own the code, the design and the content",
+        "Direct line to the people building your site"
+      ]
+    },
+    "order": 2
+  },
+  {
+    "id": "process",
+    "index_label": "(03_PROCESS)",
+    "title": "How a project runs",
+    "tone": false,
+    "label_bold": "Sequence",
+    "label_text": "Three stages, no detours.",
+    "cards": [
+      {
+        "num": "01",
+        "title": "Discovery & Strategy",
+        "text": "Analyzing your brand, audience, and market goals to build a clear roadmap."
+      },
+      {
+        "num": "02",
+        "title": "Design & Development",
+        "text": "Building pixel-perfect interfaces and robust backend architectures."
+      },
+      {
+        "num": "03",
+        "title": "SEO & Launch",
+        "text": "Testing, optimizing page performance, setting up indexation, and bringing your site live."
+      }
+    ],
+    "accent_videos": [
+      "https://raw.githubusercontent.com/Ramashery/Dev3/refs/heads/main/video/v4.mp4",
+      "https://raw.githubusercontent.com/Ramashery/Dev3/refs/heads/main/video/v8.mp4"
+    ],
+    "reveal_video": "https://raw.githubusercontent.com/Ramashery/Dev3/refs/heads/main/video/b9.mp4",
+    "square_video": "https://raw.githubusercontent.com/Ramashery/Dev3/refs/heads/main/video/t1.mp4",
+    "takeover": {
+      "num": "(04)",
+      "video": "https://raw.githubusercontent.com/Ramashery/Dev3/refs/heads/main/video/t1.mp4",
+      "title_lines": [
+        {
+          "text": "Handover",
+          "accent": false
+        },
+        {
+          "text": "& Beyond",
+          "accent": true
+        }
+      ],
+      "text": "When the site goes live the work does not vanish. We walk you through everything, hand over the keys and stay close while your new site settles in.",
+      "items": [
+        "A recorded walkthrough of your admin panel",
+        "Full documentation and source access",
+        "30 days of free post-launch fixes",
+        "Optional monthly care plan when you need it"
+      ]
+    },
+    "order": 3
+  }
+]

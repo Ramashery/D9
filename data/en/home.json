@@ -1,0 +1,104 @@
+{
+  "lang": "en",
+  "title": "Romaha Dev Agency — Web Development, Design & SEO in Tbilisi",
+  "description": "Romaha Dev Agency builds fast custom websites with built-in SEO for businesses in Tbilisi and beyond. Fixed scope, honest timelines.",
+  "og_image": "",
+  "logo": {
+    "url": "https://i.postimg.cc/hvBjxgbc/logo-SM.png",
+    "alt": "Romaha Dev Agency"
+  },
+  "hero": {
+    "h1": "Custom websites, design & SEO for businesses in Tbilisi. Built fast, found first, made to sell.",
+    "video": "https://raw.githubusercontent.com/Ramashery/Dev3/refs/heads/main/video/x1.mp4"
+  },
+  "contacts": {
+    "telegram": "https://t.me/ramashery",
+    "whatsapp": "https://wa.me/995591102653",
+    "phone": "+995591102653",
+    "phone_href": "tel:+995591102653",
+    "email": "romahalive@gmail.com"
+  },
+  "org": {
+    "name": "Romaha Dev Agency",
+    "locality": "Tbilisi",
+    "country": "GE"
+  },
+  "footer": {
+    "title": "Let's make it happen.",
+    "year": "©26",
+    "cta_text": "Drop us a line to talk about your project.",
+    "cta_button": "Let's Talk",
+    "address": [
+      "Romaha Dev Agency",
+      "Tbilisi, Georgia"
+    ],
+    "copyright": "All rights reserved ©2026",
+    "video": "https://raw.githubusercontent.com/Ramashery/Dev3/refs/heads/main/video/b2.mp4",
+    "nav": [
+      {
+        "label": "Index",
+        "href": "#top"
+      },
+      {
+        "label": "Services",
+        "href": "#services"
+      },
+      {
+        "label": "Work",
+        "href": "#why"
+      },
+      {
+        "label": "Journal",
+        "href": "#process"
+      },
+      {
+        "label": "About",
+        "href": "#process"
+      }
+    ]
+  },
+  "form": {
+    "lead_muted": "Every project we've worked on started with a message like this one.",
+    "lead_strong": "Just tell us what you're building and why it matters to you.",
+    "submit": "Send message",
+    "close": "[Close]",
+    "ok": "Thank you — we'll reply within one working day.",
+    "error": "Something went wrong. Please write to us on Telegram instead.",
+    "services": [
+      "Web Development",
+      "UI/UX & Design",
+      "SEO",
+      "Launch, Care & Growth"
+    ],
+    "fields": [
+      {
+        "key": "name",
+        "label": "Name",
+        "hint": "We like first names. Keeps it human.",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "email",
+        "label": "Email",
+        "hint": "The real one. We promise not to abuse it",
+        "type": "email",
+        "required": true
+      },
+      {
+        "key": "company",
+        "label": "Company",
+        "hint": "Where you work. Or what you're building.",
+        "type": "text"
+      },
+      {
+        "key": "role",
+        "label": "Role",
+        "hint": "What you do there. A title works too.",
+        "type": "text"
+      }
+    ],
+    "service_hint": "What you're looking for. Pick one.",
+    "message_hint": "What's on your mind. No need to polish it."
+  }
+}
