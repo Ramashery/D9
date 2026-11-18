@@ -1,0 +1,18 @@
+{{- /* Пункты меню — одни и те же для оверлея и футера. Вход: текущая страница. Выход: [{key,url,active}] */ -}}
+{{- $page := . -}}
+{{- $cur := partial "rurl.html" $page -}}
+{{- $src := slice
+      (dict "key" "nav_home"     "page" site.Home)
+      (dict "key" "nav_works"    "page" (site.GetPage "/works"))
+      (dict "key" "nav_services" "page" (site.GetPage "/services"))
+      (dict "key" "nav_insights" "page" (site.GetPage "/insights"))
+      (dict "key" "nav_about"    "page" (site.GetPage "/about")) -}}
+{{- $out := slice -}}
+{{- range $it := $src -}}
+  {{- with $it.page -}}
+    {{- $u := partial "rurl.html" . -}}
+    {{- $active := or (eq $cur $u) (and (ne $it.key "nav_home") (strings.HasPrefix $cur (print $u "/"))) -}}
+    {{- $out = $out | append (dict "key" $it.key "url" $u "active" $active) -}}
+  {{- end -}}
+{{- end -}}
+{{- return $out -}}

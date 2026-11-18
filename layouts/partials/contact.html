@@ -1,0 +1,79 @@
+{{- $f := (partial "data.html" (dict "name" "home" "lang" site.Language.Lang)).form -}}
+{{- $fb := site.Params.firebase -}}
+<div class="contact-backdrop" id="contact-backdrop"></div>
+<div class="contact-panel" id="contact-panel" role="dialog" aria-modal="true" aria-label="Contact form">
+  <div class="contact-panel__inner">
+    <div class="contact-panel__top-rule"></div>
+    <div class="contact-panel__header">
+      <button class="contact-panel__close" id="close-contact" type="button">{{ $f.close }}</button>
+    </div>
+
+    <p class="contact-panel__lead">
+      <span class="muted">{{ $f.lead_muted }}</span>
+      <span class="strong">{{ $f.lead_strong }}</span>
+    </p>
+
+    <form class="contact-panel__form" id="contact-form" novalidate
+          data-project="{{ $fb.projectId }}" data-key="{{ $fb.apiKey }}"
+          data-ok="{{ $f.ok }}" data-error="{{ $f.error }}">
+      <div class="contact-panel__fields">
+        {{ range $i, $fld := $f.fields }}
+        <div class="contact-field">
+          <div class="contact-field__row">
+            <span class="contact-field__num">({{ add $i 1 }})</span>
+            <div class="contact-field__body">
+              <span class="contact-field__label">{{ $fld.label }}</span>
+              <div class="contact-field__input-wrap">
+                <span class="contact-field__placeholder">{{ $fld.hint }}</span>
+                <input class="contact-field__input" name="{{ $fld.key }}" type="{{ $fld.type }}"{{ if $fld.required }} required{{ end }}{{ if eq $fld.type "email" }} autocomplete="email"{{ end }}>
+              </div>
+            </div>
+          </div>
+        </div>
+        {{ end }}
+
+        <div class="contact-field">
+          <div class="contact-field__row">
+            <span class="contact-field__num">({{ add (len $f.fields) 1 }})</span>
+            <div class="contact-field__body">
+              <span class="contact-field__label">Service</span>
+              <div class="contact-field__input-wrap">
+                <input type="hidden" name="service" id="service-input">
+                <button type="button" class="contact-field__service" id="service-toggle" aria-expanded="false">
+                  <span class="contact-field__service-label" id="service-label">{{ $f.service_hint }}</span>
+                  <span class="contact-field__plus" id="service-plus">+</span>
+                </button>
+                <div class="contact-field__options" id="service-options">
+                  {{ range $f.services }}<button type="button">{{ . }}</button>
+                  {{ end }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-field">
+          <div class="contact-field__row">
+            <span class="contact-field__num">({{ add (len $f.fields) 2 }})</span>
+            <div class="contact-field__body contact-field__body--message">
+              <span class="contact-field__label">Message</span>
+              <div class="contact-field__input-wrap contact-field__input-wrap--message">
+                <span class="contact-field__placeholder contact-field__placeholder--message">{{ $f.message_hint }}</span>
+                <textarea class="contact-field__textarea" name="message" rows="3" required></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {{/* honeypot: боты заполняют, люди не видят */}}
+      <input class="contact-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+      <p class="contact-panel__status" id="contact-status" role="status" aria-live="polite"></p>
+
+      <button class="contact-panel__submit" type="submit">
+        <span class="contact-panel__submit-label">{{ $f.submit }}</span>
+      </button>
+    </form>
+  </div>
+</div>

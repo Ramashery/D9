@@ -1,0 +1,42 @@
+{{- $h := (partial "data.html" (dict "name" "home" "lang" site.Language.Lang)) -}}
+{{- $f := $h.footer -}}
+{{- $c := $h.contacts -}}
+<footer class="footer">
+  {{ partial "lazyvideo.html" (dict "src" $f.video "class" "footer__bg-video" "autoplay" true) }}
+  <div class="footer__scrim"></div>
+
+  <div class="footer__top">
+    <div class="footer__title">{{ $f.title }}</div>
+    <div class="footer__year">{{ $f.year }}</div>
+  </div>
+
+  <div class="footer__middle">
+    <nav class="footer__nav" aria-label="{{ i18n "nav_label" }}">
+      {{ range partial "nav-items.html" . }}<a href="{{ .url }}"{{ if .active }} aria-current="page"{{ end }}>{{ i18n .key }}</a>
+      {{ end }}
+    </nav>
+    <div class="footer__contacts">
+      <a href="{{ $c.telegram }}" target="_blank" rel="noopener">Telegram</a>
+      <a href="{{ $c.whatsapp }}" target="_blank" rel="noopener">WhatsApp</a>
+      <a href="{{ $c.phone_href }}">{{ $c.phone }}</a>
+      <a href="mailto:{{ $c.email }}">{{ $c.email }}</a>
+    </div>
+  </div>
+
+  <div class="footer__body">
+    <div class="footer__cta-block">
+      <p class="footer__cta-text">{{ $f.cta_text }}</p>
+      <button type="button" class="footer__cta-button" id="open-contact">
+        <span class="footer__cta-button-label">{{ $f.cta_button }}</span>
+      </button>
+    </div>
+
+    <div class="footer__bottom">
+      <a class="footer__logo" href="#top" aria-label="{{ $h.logo.alt }} — home">
+        <img src="{{ $h.logo.url }}" alt="{{ $h.logo.alt }}" loading="lazy" decoding="async">
+      </a>
+      <div class="footer__address">{{ range $f.address }}<p>{{ . }}</p>{{ end }}</div>
+      <p class="footer__copyright">{{ $f.copyright }}</p>
+    </div>
+  </div>
+</footer>
