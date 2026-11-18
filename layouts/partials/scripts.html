@@ -1,0 +1,7 @@
+{{/* Меню — отдельный маленький скрипт: работает, даже если что-то упало в движке главной */}}
+{{ $menu := resources.Get "js/menu.js" | minify | fingerprint }}
+<script src="{{ $menu.RelPermalink }}" integrity="{{ $menu.Data.Integrity }}" defer></script>
+{{ if .IsHome }}
+{{ $js := slice (resources.Get "js/engine.js") (resources.Get "js/textanim.js") (resources.Get "js/lazymedia.js") (resources.Get "js/contact.js") (resources.Get "js/hero.js") | resources.Concat "js/home.js" | minify | fingerprint }}
+<script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
+{{ end }}
