@@ -1,0 +1,57 @@
+/* дополнения к исходному дизайну (форма → Firestore) */
+.contact-hp{ position:absolute !important; left:-9999px; width:1px; height:1px; opacity:0; pointer-events:none; }
+.contact-panel__status{ min-height:1.4em; margin:14px 0 0; font-size:.8rem; letter-spacing:.02em; color:var(--accent); }
+.contact-panel__status.is-error{ color:#ff8c7a; }
+.contact-panel__submit:disabled{ opacity:.5; cursor:progress; }
+/* видео без src не должны давать белую/серую вспышку до загрузки */
+video[data-src]{ background:#000; }
+
+/* ================= ПРАВКИ ГЛАВНОЙ ================= */
+
+/* --- hero: все тексты подстраиваются под фон (как лого и кнопка menu) --- */
+.cv{ mix-blend-mode: difference; }
+
+/* --- убраны технические синие надписи; места под них сохранены (visibility, а не display),
+       поэтому соседние объекты не двигаются --- */
+.section__index,   /* (01_SERVICES), (02_WHY.ROMAHA), (03_PROCESS) */
+.card__num,        /* 01 02 03 над карточками */
+.sq-col__num{      /* (04) в полноэкранных блоках */
+  visibility: hidden;
+}
+.sel .chip{ display: none; }   /* подписи «H1 · 120PX» и размеры у рамки выделения в hero */
+
+/* --- футер --- */
+.footer{
+  --footer-gray: var(--ink-dim);                    /* тот же серый, что у «Core capabilities» */
+  --hdr: calc(44px + 2 * clamp(12px, 2.4vw, 22px));  /* высота верхней панели с лого и кнопкой menu */
+}
+@media (max-width: 480px){ .footer{ --hdr: calc(32px + 2 * clamp(12px, 2.4vw, 22px)); } }
+
+/* голубая линия над «Let's make it happen» убрана; блок опущен под верхнюю панель */
+.footer__top{
+  border-top: 0;
+  padding-top: calc(var(--hdr) + 8px - max(24px, 1.67vw));
+}
+/* буквы вдвое меньше */
+.footer__title{ font-size: clamp(20px, 3.62vw, 52px); }
+.footer__year { font-size: clamp(32px, 8.12vw, 117px); }
+
+/* все голубые надписи футера — серые */
+.footer,
+.footer__title,
+.footer__year,
+.footer__cta-text,
+.footer__contacts a,
+.footer__nav a,
+.footer__links,
+.footer__address,
+.footer__copyright{ color: var(--footer-gray); }
+
+@media (max-width: 768px){
+  .footer__top{ padding-top: calc(var(--hdr) + 8px - 20px); }
+  .footer__title{ font-size: clamp(18px, 5.5vw, 28px); }
+  .footer__year { font-size: clamp(28px, 10vw, 48px); }
+}
+
+/* --- стрелка ↘ у акцентных слов в блоках (04) (Growth / Fair Terms / & Beyond) --- */
+.sq-t--a::after{ content: none; }
