@@ -1,0 +1,148 @@
+/* ===== Верхняя панель + меню (портировано из menu_for_my_site.html) =====
+   Все классы с префиксом .mn-, глобальные сбросы и fluid-rem исходника убраны,
+   чтобы не ломать остальной сайт. «1rem исходника» = var(--mu). */
+.mn-nav,.mn-menu{
+  --mu: clamp(9px, calc(100vw / 144), 13px);
+  --sp-xl: calc(var(--mu) * 2);
+  --sp-l:  calc(var(--mu) * 1.2);
+  --sp-m:  calc(var(--mu) * .8);
+  --sp-s:  calc(var(--mu) * .4);
+  --gm:    calc(var(--mu) * 1.2);
+  --logo-h: 44px;
+  font-family: var(--type, 'Neue Montreal','Inter','Helvetica Neue',Arial,sans-serif);
+  -webkit-font-smoothing: antialiased;
+}
+@media (max-width:768px){
+  .mn-nav,.mn-menu{ --mu: clamp(8px, calc(100vw / 39), 12px); }
+}
+@media (max-width:480px){
+  .mn-nav,.mn-menu{ --logo-h: 32px; }   /* как в исходнике: лого 32px на телефоне */
+}
+.mn-nav *,.mn-menu *{ box-sizing:border-box; margin:0; padding:0; }
+.mn-nav a,.mn-menu a{ color:inherit; text-decoration:none; }
+.mn-menu ul{ list-style:none; }
+.mn-nav button,.mn-menu button{ background:none; border:0; font:inherit; color:inherit; cursor:pointer; }
+.mn-nav :focus-visible,.mn-menu :focus-visible{ outline:2px solid currentColor; outline-offset:3px; }
+
+/* кнопка «menu / close / en ka ru» — стиль .heading-xxs uppercase semi-bold исходника */
+.mn-btn{
+  font-size: calc(var(--mu) * 1.2); line-height: calc(var(--mu) * 1.4);
+  letter-spacing: calc(var(--mu) * -.024); font-weight: 600; text-transform: uppercase;
+}
+.mn-text{ font-size: calc(var(--mu) * 1.4); line-height: calc(var(--mu) * 1.8); font-weight: 400; }
+
+/* ---------- верхняя панель ---------- */
+.mn-nav{
+  position: fixed; top: 0; left: 0; width: 100%; z-index: 900;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: clamp(12px, 2.4vw, 22px) clamp(20px, 5vw, 64px);
+  mix-blend-mode: difference; color: #fff; pointer-events: none;
+}
+.mn-nav > *{ pointer-events: auto; }
+/* лого — как .topbar__logo исходной главной: PNG имеет прозрачное поле слева,
+   поэтому логотип сдвинут влево, чтобы видимая надпись шла по полю страницы */
+.mn-nav__logo,.mn-menu__logo{ display:block; flex:0 1 auto; min-width:0; margin-left:calc(var(--logo-h) * -0.713); transition:opacity .25s ease; }
+.mn-nav__logo:hover,.mn-menu__logo:hover{ opacity:.8; }
+.mn-nav__logo img,.mn-menu__logo img{ display:block; height:var(--logo-h); width:auto; max-width:none; }
+
+/* кнопка menu / close — размер и положение как .topbar__menu исходной главной */
+.mn-nav .mn-btn--bar,.mn-menu .mn-btn--bar{
+  all:unset; pointer-events:auto; box-sizing:border-box; cursor:pointer; flex-shrink:0;
+  padding:10px 4px; color:#fff;
+  font-family:'Inter','Helvetica Neue',Arial,sans-serif;
+  font-size:.75rem; font-weight:800; letter-spacing:.02em; text-transform:uppercase; line-height:1.8;
+  transition:opacity .2s ease;
+}
+.mn-nav .mn-btn--bar:hover,.mn-menu .mn-btn--bar:hover{ opacity:.7; }
+.mn-nav .mn-btn--bar:focus-visible,.mn-menu .mn-btn--bar:focus-visible{ outline:1px solid #fff; outline-offset:4px; }
+
+/* ---------- оверлей ---------- */
+/* плавность как в preymaker: панель раскрывается сверху вниз через clip-path,
+   открытие 1.75s, закрытие 1.25s, кривая cubic-bezier(.77,0,.175,1) */
+.mn-menu{
+  position: fixed; inset: 0; z-index: 1000; color: #fff;
+  visibility: hidden; pointer-events: none;
+  clip-path: inset(0 0 101% 0);
+  transition: clip-path 1.25s cubic-bezier(.77,0,.175,1), visibility 0s linear 1.25s;   /* visibility ждём до конца закрытия */
+}
+.mn-menu.is-open{
+  visibility: visible; pointer-events: all;
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 1.75s cubic-bezier(.77,0,.175,1), visibility 0s linear 0s;
+}
+
+.mn-menu__bg{ position: absolute; inset: 0; background: #000; }
+
+.mn-menu__inner{
+  position: relative; width: 100%; height: 100%; overflow-y: auto; overscroll-behavior: contain;
+  display: flex; flex-direction: column;
+  padding: clamp(12px, 2.4vw, 22px) clamp(20px, 5vw, 64px) var(--sp-xl);
+}
+.mn-menu__top{
+  display: flex; justify-content: space-between; align-items: center;
+  padding-bottom: var(--sp-l); border-bottom: 1px solid rgba(255,255,255,.15);
+}
+.mn-menu__bottom{ flex: 1; display: flex; justify-content: space-between; gap: var(--sp-xl); padding-top: var(--sp-xl); }
+.mn-menu__left{ flex: 1; min-width: 0; }
+.mn-menu__right{ flex: 1; display: flex; gap: var(--sp-xl); min-width: 0; }
+.mn-menu__item{ flex: 1; min-width: 0; }
+.mn-menu__header{ display: flex; flex-direction: column; gap: var(--sp-s); padding-bottom: var(--sp-l); margin-bottom: var(--sp-l); }
+.mn-menu__line{ display: block; height: 1px; width: 100%; background: rgba(255,255,255,.25); }
+.mn-menu ul{ display: flex; flex-direction: column; gap: var(--sp-s); }
+
+.mn-menu__left a{ display: block; font-size: calc(var(--mu) * 4); line-height: calc(var(--mu) * 4.2); font-weight: 600; letter-spacing: calc(var(--mu) * -.08); }
+.mn-menu__right a{ display: block; font-size: calc(var(--mu) * 2); line-height: calc(var(--mu) * 2.2); font-weight: 600; overflow-wrap: anywhere; }
+.mn-menu__left a.is-active{ opacity: .45; }
+
+/* ---------- нижний ряд панели: видео слева, языки справа ---------- */
+.mn-menu{ --edge: clamp(20px, 5vw, 64px); --vid: min(32vw, 42vh); --vx: clamp(8px, 1vw, 16px); }
+.mn-menu__inner{ padding-bottom: var(--edge); }                            /* отступ снизу = отступ справа */
+.mn-menu__foot{ display: flex; justify-content: space-between; align-items: flex-end; gap: var(--sp-xl); padding-top: var(--sp-xl); }
+.mn-menu__video{ flex: none; width: var(--vid); aspect-ratio: 1 / 1; overflow: hidden; margin-left: calc(var(--vx) - var(--edge)); }   /* ближе к левому краю */
+.mn-menu__video video{ display: block; width: 100%; height: 100%; object-fit: cover; }
+
+/* десктоп: панель ровно на весь экран, без прокрутки.
+   Нижний ряд занимает всё оставшееся место; видео подстраивается под него,
+   переключатель языков прижат к правому нижнему углу экрана */
+@media (min-width:769px){
+  .mn-menu__inner{ height: 100%; }
+  .mn-menu__bottom{ flex: none; }
+  .mn-menu__foot{ position: relative; flex: 1 1 0; min-height: 0; padding-top: 0; margin-top: var(--sp-xl); }
+  .mn-menu__video{ position: absolute; left: calc(var(--vx) - var(--edge)); bottom: 0; margin: 0;
+                   height: min(100%, var(--vid)); width: auto; }
+  .mn-lang{ position: absolute; right: 0; bottom: 0; }
+}
+
+/* переключатель языков — правый нижний угол */
+.mn-lang{ display: flex; gap: var(--sp-xl); align-items: flex-end; }
+.mn-menu .mn-lang__item{
+  display: inline-block; text-transform: uppercase; opacity: .45; transition: opacity .2s;
+  font-size: calc(var(--mu) * 2); line-height: calc(var(--mu) * 2.2); font-weight: 600;
+}
+.mn-menu .mn-lang__item:hover,.mn-menu .mn-lang__item.is-active{ opacity: 1; }
+.mn-menu .mn-lang__item.is-active{ text-decoration: underline; text-underline-offset: .18em; text-decoration-thickness: 2px; }
+
+/* появление пунктов: stagger на CSS (без GSAP) */
+.mn-menu li,.mn-menu__foot > *{ opacity: 0; transform: translateY(calc(var(--mu) * 2)); transition: opacity .3s ease, transform .3s ease; }
+.mn-menu.is-open li,.mn-menu.is-open .mn-menu__foot > *{
+  opacity: 1; transform: none;
+  transition: opacity .9s cubic-bezier(.16,1,.3,1) calc(.25s + var(--i, 0) * .04s),
+              transform .9s cubic-bezier(.16,1,.3,1) calc(.25s + var(--i, 0) * .04s);
+}
+
+@media (max-width:768px){
+  .mn-menu{ --vid: 50vw; --vx: 8px; --vy: 8px; }  /* телефон: видео прижато ближе к левому и нижнему краю */
+  .mn-menu__video{ margin-bottom: calc(var(--vy) - var(--edge)); }
+  .mn-lang{ flex-direction: column; align-items: flex-end; gap: var(--sp-m); }
+  .mn-menu .mn-lang__item{ font-size: calc(var(--mu) * 1.6); line-height: calc(var(--mu) * 1.8); }
+  .mn-menu__bottom{ flex-direction: column; gap: var(--sp-xl); padding-top: var(--sp-l); }
+  .mn-menu__right{ flex-direction: column; gap: var(--sp-l); }
+  .mn-menu__left a{ font-size: calc(var(--mu) * 2.4); line-height: calc(var(--mu) * 2.6); letter-spacing: calc(var(--mu) * -.048); }
+  .mn-menu__right a{ font-size: calc(var(--mu) * 1.6); line-height: calc(var(--mu) * 1.8); }
+}
+@media (prefers-reduced-motion:reduce){
+  .mn-menu,.mn-menu *{ transition-duration: .01ms !important; transition-delay: 0s !important; }
+}
+
+/* пока открыто меню — страница под ним не прокручивается */
+html.menu-open,html.menu-open body{ overflow: hidden !important; }
