@@ -1,0 +1,80 @@
+{{- /* Верхняя панель + полноэкранное меню (одно на все страницы и языки) */ -}}
+{{- $page := . -}}
+{{- $d := partial "data.html" (dict "name" "home" "lang" site.Language.Lang) -}}
+{{- $c := $d.contacts -}}
+{{- $items := partial "nav-items.html" $page -}}
+{{- $n := len $items -}}
+{{- /* видео в углу меню: по умолчанию mp4; чтобы включить webm с прозрачностью, добавьте в data/<lang>/home.json  "menu_video": {"mp4": "...", "webm": "..."} */ -}}
+{{- $mv := $d.menu_video | default (dict "mp4" "https://raw.githubusercontent.com/Ramashery/Dev3/refs/heads/main/video/rd-3d-metal.mp4") -}}
+
+<nav class="mn-nav" aria-label="{{ i18n "nav_label" }}">
+  <a href="{{ partial "rurl.html" site.Home }}" class="mn-nav__logo" aria-label="{{ $d.logo.alt }}">
+    <img src="{{ $d.logo.url }}" alt="{{ $d.logo.alt }}" decoding="async" fetchpriority="high">
+  </a>
+  <button type="button" class="mn-btn--bar" id="mnOpen" aria-expanded="false" aria-controls="mnMenu">{{ i18n "menu" }}</button>
+</nav>
+
+<div class="mn-menu" id="mnMenu" role="dialog" aria-modal="true" aria-label="{{ i18n "nav_label" }}">
+  <div class="mn-menu__bg" aria-hidden="true"></div>
+
+  <div class="mn-menu__inner">
+    <div class="mn-menu__top">
+      <a href="{{ partial "rurl.html" site.Home }}" class="mn-menu__logo" aria-label="{{ $d.logo.alt }}">
+        <img src="{{ $d.logo.url }}" alt="{{ $d.logo.alt }}" decoding="async" loading="lazy">
+      </a>
+      <button type="button" class="mn-btn--bar" id="mnClose">{{ i18n "close" }}</button>
+    </div>
+
+    <div class="mn-menu__bottom">
+      <div class="mn-menu__left">
+        <header class="mn-menu__header">
+          <p class="mn-text">{{ i18n "pages" }}</p>
+          <span class="mn-menu__line"></span>
+        </header>
+        <ul>
+          {{- range $i, $it := $items }}
+          <li style="--i:{{ $i }}"><a href="{{ $it.url }}"{{ if $it.active }} class="is-active" aria-current="page"{{ end }}>{{ i18n $it.key }}</a></li>
+          {{- end }}
+        </ul>
+      </div>
+
+      <div class="mn-menu__right">
+        <div class="mn-menu__item">
+          <header class="mn-menu__header">
+            <p class="mn-text">{{ i18n "contacts" }}</p>
+            <span class="mn-menu__line"></span>
+          </header>
+          <ul>
+            <li style="--i:{{ $n }}"><a href="{{ $c.telegram }}" target="_blank" rel="noopener">Telegram</a></li>
+            <li style="--i:{{ add $n 1 }}"><a href="{{ $c.whatsapp }}" target="_blank" rel="noopener">WhatsApp</a></li>
+            <li style="--i:{{ add $n 2 }}"><a href="{{ $c.phone_href }}">{{ $c.phone }}</a></li>
+            <li style="--i:{{ add $n 3 }}"><a href="mailto:{{ $c.email }}">{{ $c.email }}</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    {{/* нижний ряд панели: слева квадрат с видео, справа переключатель языков */}}
+    <div class="mn-menu__foot">
+      <div class="mn-menu__video" style="--i:{{ add $n 4 }}" aria-hidden="true">
+        <video muted loop playsinline preload="none" disablepictureinpicture tabindex="-1">
+          {{ with $mv.webm }}<source data-src="{{ . }}" type="video/webm">{{ end }}
+          {{ with $mv.mp4 }}<source data-src="{{ . }}" type="video/mp4">{{ end }}
+        </video>
+      </div>
+
+      {{/* ведёт на ту же страницу на другом языке, если перевода нет — на главную */}}
+      <div class="mn-lang" role="group" aria-label="{{ i18n "language" }}" style="--i:{{ add $n 5 }}">
+        {{- range site.Languages }}
+          {{- $lang := .Lang -}}
+          {{- $target := "" -}}
+          {{- range $page.AllTranslations }}{{ if eq .Language.Lang $lang }}{{ $target = . }}{{ end }}{{ end -}}
+          {{- if not $target }}{{ range site.Home.AllTranslations }}{{ if eq .Language.Lang $lang }}{{ $target = . }}{{ end }}{{ end }}{{ end -}}
+          {{- if $target }}
+        <a href="{{ partial "rurl.html" $target }}" class="mn-lang__item{{ if eq $lang site.Language.Lang }} is-active{{ end }}" hreflang="{{ $lang }}" lang="{{ $lang }}" data-lang="{{ $lang }}"{{ if eq $lang site.Language.Lang }} aria-current="true"{{ end }}>{{ $lang }}</a>
+          {{- end }}
+        {{- end }}
+      </div>
+    </div>
+  </div>
+</div>
