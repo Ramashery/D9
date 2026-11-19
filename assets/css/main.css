@@ -1,0 +1,1148 @@
+  @font-face{
+    font-family: 'Neue Montreal';
+    src: url('/fonts/NeueMontreal-Bold.woff2') format('woff2');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+  }
+  :root{
+    --bg: #000000;
+    --bg-deep: #000000;
+    --ink: #f3f1ec;
+    --ink-dim: rgba(243,241,236,0.6);
+    --ink-faint: rgba(243,241,236,0.34);
+    --accent: #7fa6c2;
+    --line: rgba(243,241,236,0.16);
+    --line-strong: rgba(243,241,236,0.28);
+    --type: 'Neue Montreal', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  html, body{
+    height: 100%;
+    overflow: hidden; /* native scroll disabled — heavy inertial scroll drives the page */
+  }
+
+  body{
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--type);
+    font-weight: 800;
+    line-height: 1.15;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+  }
+
+  /* ============================================================
+     HEAVY SCROLL — fixed container moved with an eased transform
+     instead of native scrolling (see script at the bottom).
+     ============================================================ */
+  #scroll-container{
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    will-change: transform;
+  }
+
+  a{ color:inherit; text-decoration:none; }
+  img,video{ display:block; max-width:100%; }
+
+  :focus-visible{
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  .wrap{
+    max-width: 1360px;
+    margin: 0 auto;
+    padding-left: clamp(20px, 5vw, 64px);
+    padding-right: clamp(20px, 5vw, 64px);
+  }
+
+  /* ============================================================
+     TOP BAR — logo (left) + MENU button (right), no plate.
+     mix-blend-mode: difference keeps both visible on any background.
+     ============================================================ */
+  .topbar{
+    --logo-h: 44px;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 900;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: clamp(12px, 2.4vw, 22px) clamp(20px, 5vw, 64px);
+    pointer-events: none;
+    mix-blend-mode: difference;
+    color: #fff;
+  }
+  .topbar > *{ pointer-events: auto; }
+
+  .topbar__logo{
+    display: block;
+    flex: 0 1 auto;
+    min-width: 0;
+    text-decoration: none;
+    /* the PNG has transparent padding on the left: pull it back so the
+       visible wordmark lines up with the page margin */
+    margin-left: calc(var(--logo-h) * -0.713);
+    transition: opacity .25s ease;
+  }
+  .topbar__logo:hover{ opacity: .8; }
+  .topbar__logo img{
+    display: block;
+    height: var(--logo-h);
+    width: auto;
+    max-width: none;
+  }
+
+  .topbar__menu{
+    all: unset;
+    box-sizing: border-box;
+    cursor: pointer;
+    flex-shrink: 0;
+    padding: 10px 4px;
+    color: #fff;
+    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    font-size: .75rem;
+    font-weight: 800;
+    letter-spacing: .02em;
+    text-transform: uppercase;
+    line-height: 1.8;
+    transition: opacity .2s ease;
+  }
+  .topbar__menu:hover{ opacity: .7; }
+  .topbar__menu:focus-visible{ outline: 1px solid #fff; outline-offset: 4px; }
+
+  @media (max-width: 480px){
+    .topbar{ --logo-h: 32px; }
+  }
+
+  /* (grain/scanline overlay removed per request — no horizontal noise) */
+
+  /* (old fullscreen nav + mega-menu styles removed — replaced by .topbar above) */
+
+  /* ============================================================
+     HERO — animated slider (stage scaled to the viewport)
+     ============================================================ */
+
+  :root{
+    --bg: #000000;
+    --ink: #f3f1ec;
+    --ink-dim: rgba(243,241,236,0.6);
+    --ink-faint: rgba(243,241,236,0.34);
+    --accent: #7fa6c2;
+    --type: 'Neue Montreal', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    --display: 'Inter', 'Helvetica Neue', Arial, sans-serif; /* needs real weights 200–900 for the contrast play */
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --slash-angle: 26deg;
+    --e1: cubic-bezier(.58,.01,0,.99);
+    --e4: cubic-bezier(.77,0,0,.99);
+  }
+  .sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+
+  /* ================= HERO SHELL ================= */
+  .hero{ position:relative; height:100svh; min-height:620px; overflow:hidden; background:#000; }
+  .stage{ position:absolute; left:0; top:0; transform-origin:0 0; overflow:hidden; background:#000; white-space:nowrap; line-height:1; color:var(--ink); }
+  .cv{ position:absolute; }
+  .mono{ font-family:var(--mono); font-weight:500; text-transform:uppercase; letter-spacing:-.02em; }
+
+  /* ================= VIDEO (same treatment as the site hero) ================= */
+  .vw{ position:absolute; inset:0; overflow:clip; clip-path:inset(0); transition:clip-path 1.2s var(--e4); background:#000; }
+  .vs{ position:absolute; inset:0; transform-origin:50% calc(var(--oy) + 810px); transition:transform 1.2s var(--e1), filter 1s ease; }
+  .vs video{
+    position:absolute; top:50%; left:50%;
+    min-width:100%; min-height:100%; width:auto; height:auto;
+    transform:translate(-50%,-50%);
+    object-fit:cover;
+    filter:grayscale(35%) contrast(1.05);
+    opacity:0;
+    transition:opacity 1.2s ease-in-out;
+  }
+  .vs video.bg-video-active{ opacity:.55; }
+  /* desktop: video flipped by another 180deg vs. the previous version (now 0deg = no rotation). Set --vrot to 90deg / 180deg / 270deg to try other orientations. */
+  .stage:not(.m) .vs video{ width:var(--sw); height:var(--sh); min-width:0; min-height:0; transform:translate(-50%,-50%) rotate(var(--vrot,0deg)); }
+  .scrim{ position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,.35) 0%,rgba(0,0,0,.2) 40%,var(--bg) 96%); pointer-events:none; }
+
+  /* video shrinks into a window on slide 1 */
+  .stage[data-index="1"] .vw{ clip-path:inset(calc(var(--oy) + 130px) calc(var(--ox) + 270px) calc(var(--oy) + 50px) calc(var(--ox) + 270px)); }
+  .stage[data-index="1"] .vs{ transform:translate3d(0,-50px,0) scale(calc(640 / var(--shn))); transition-duration:1s; }
+  .stage.m .vs{ transform-origin:50% 100%; }
+  /* slide 5: video goes soft behind the big type */
+  .stage[data-index="4"] .vs{ filter:blur(12px) brightness(.85); transform:scale(1.06); }
+  .stage.m[data-index="1"] .vw{ clip-path:inset(182px var(--ox) 148px var(--ox)); }
+  .stage.m[data-index="1"] .vs{ transform:translate3d(0,-148px,0) scale(calc((var(--shn) - 330) / var(--shn))); }
+
+  /* ================= SLASH GRID ================= */
+  .kv{ position:absolute; inset:0; display:none; }
+  .kv.on{ display:block; }
+  .a{ position:absolute; }
+  .gr{ position:absolute; left:calc(-1 * var(--ox)); top:calc(-1 * var(--oy)); width:var(--sw); height:var(--sh); opacity:.6; pointer-events:none; }
+  .gr svg{ display:block; width:100%; height:100%; overflow:visible; }
+  .gr path{ fill:none; stroke:var(--accent); stroke-dasharray:1; stroke-dashoffset:1; }
+
+  /* ================= SCRAMBLE TEXT ================= */
+  .sc{ --duration:min(calc(var(--length)*var(--duration-per-char,.05s)),var(--max-duration,.7s)); --delay-index:calc(var(--stagger-index,0)*var(--stagger,.07s) + var(--start-delay,.5s)); --delay:calc(var(--duration)/var(--length)*var(--mask-offset-factor,2) + var(--delay-index)); position:relative; display:block; width:fit-content; white-space:nowrap; }
+  .sb{ display:block; width:fit-content; clip-path:polygon(0 0,0 0,0 120%,0 120%); }
+  .sm{ position:absolute; inset:0; white-space:nowrap; clip-path:polygon(0 0,0 0,0 120%,0 120%); }
+  .sm::before{ content:var(--maskText); position:absolute; left:0; top:0; width:100%; height:100%; clip-path:polygon(0 0,100% 0,10% 120%,0 120%); }
+  .is-active .sb{ clip-path:polygon(0 0,100% 0,100% 120%,0 120%); transition:clip-path var(--duration) steps(var(--easing-steps)) var(--delay); }
+  .is-active .sm{ clip-path:polygon(-.5em 0,100% 0,calc(100% + .5em) 120%,0 120%); transition:clip-path var(--duration) steps(var(--easing-steps)) var(--delay-index); }
+  .is-active .sm::before{ clip-path:polygon(100% 0,100% 0,calc(100% + .5em) 120%,calc(100% + .5em) 120%); transition:clip-path var(--duration) steps(var(--easing-steps)) var(--delay); }
+  .k1.is-leaving .sb,.k5.is-leaving .sb,.k6.is-leaving .sb{ clip-path:polygon(0 0,0 0,0 120%,0 120%)!important; transition-delay:calc(var(--duration)/var(--length)*var(--mask-offset-factor,2))!important; transition-duration:min(calc(var(--duration)*.7),.5s)!important; }
+
+  /* ================= TYPEWRITER ================= */
+  .tw{ display:flex; }
+  .tc{ display:inline-block; opacity:0; transition:opacity .05s calc(var(--i)*var(--st,.04s) + var(--sd,.5s)); }
+  .is-active .tc{ opacity:1; }
+  .k3.is-leaving .tc,.k6.is-leaving .tc{ transition-delay:calc((var(--n) - var(--i))*var(--st,.04s)); opacity:0!important; }
+  .j{ display:flex; justify-content:space-between; }
+  .j>*{ flex:none; }
+
+  /* ================= SLIDE 1 — statement ================= */
+  .k1 svg.sl{ display:block; width:100%; height:auto; transform-origin:0 0; transform:translate(-75%,-101%); }
+  .k1.is-active svg.sl{ transition:transform 1s var(--e1) .55s; transform:none; }
+  .k1.is-leaving svg.sl{ transition:transform .5s var(--e1) 0s; animation:.1s step-start .1s 5 blink2; transform:translate(-75%,-101%); }
+  .pgw{ position:relative; mix-blend-mode:difference; }
+  .br path{ fill:none; stroke:var(--ink); stroke-width:1.5; stroke-dasharray:1; stroke-dashoffset:1; }
+  .k1.is-active .br path{ transition:stroke-dashoffset 1.2s var(--e4) .2s; stroke-dashoffset:0; }
+  .k1.is-leaving .br path{ transition:stroke-dashoffset .6s var(--e4) 0s; stroke-dashoffset:1; }
+  .ar{ letter-spacing:.12em; font-size:11px; opacity:0; color:var(--accent); }
+  .k1.is-active .ar{ animation:blink2 .2s step-start 6 .6s both; opacity:1; }
+  .ld{ overflow:clip; -webkit-mask:linear-gradient(45deg,#000 0% 40%,#0000 60% 100%) 100% 0/250% 100% no-repeat; mask:linear-gradient(45deg,#000 0% 40%,#0000 60% 100%) 100% 0/250% 100% no-repeat; }
+  .k1.is-active .ld{ transition:mask-position 1.4s linear .3s,-webkit-mask-position 1.4s linear .3s; -webkit-mask-position:0 0; mask-position:0 0; }
+  .k1.is-leaving .ld{ opacity:0; transition:opacity .2s; }
+
+  /* ================= SLIDE 2 — crosshair + marquee ================= */
+  .cir{ position:absolute; bottom:5px; left:50%; margin-left:-5px; width:10px; height:10px; border:1px solid var(--ink); border-radius:50%; scale:0; }
+  .lx{ position:absolute; bottom:10px; left:0; width:100%; height:1px; background:var(--ink); scale:0 1; }
+  .ly{ position:absolute; top:0; left:50%; width:1px; height:100%; background:var(--ink); transform-origin:50% 90%; scale:1 0; }
+  .k3.is-active .cir{ transition:scale .45s var(--e1); scale:1; }
+  .k3.is-active .lx,.k3.is-active .ly{ transition:scale 1.1s var(--e4) .2s; scale:1; }
+  .k3.is-leaving .cir{ transition:scale .45s var(--e1) .4s; scale:0; }
+  .k3.is-leaving .lx{ transition:scale .825s var(--e4) 0s; scale:0 1; }
+  .k3.is-leaving .ly{ transition:scale .825s var(--e4) 0s; scale:1 0; }
+  .mq{ animation:mx 14s linear infinite paused; }
+  .k3.is-active .mq,.k6.is-active .mq{ animation-play-state:running; }
+  .ico{ display:block; }
+  .otl{ font-size:60px; -webkit-text-stroke:1.5px var(--ink); color:transparent; letter-spacing:-.045em; white-space:nowrap; }
+  .otl .fl{ font-weight:200; -webkit-text-stroke:0; color:var(--accent); }
+
+  /* ================= SLIDE 3 — big type ================= */
+  .k5col{ position:absolute; left:0; top:0; width:100%; }
+  .tb{ position:relative; width:max-content; height:.98em; line-height:.8; overflow:clip; transform:translate(-10%); }
+  .k5.is-active .tb{ transition:transform 1s var(--e1) .2s; transform:none; }
+  .k5.is-active .tb.l2{ transition-delay:0s; }
+  .k5.is-leaving .tb{ transition:transform 1.15s var(--e1); transform:translate(-150%); }
+  .k5.is-leaving .tb.l1{ transition-delay:.1s; }
+  .ln{ gap:.2em; display:flex; align-items:flex-start; letter-spacing:-.045em; transform:translateY(70%); }
+  .k5.is-active .ln{ transition:transform 1.25s var(--e1) calc(var(--di)*.2s); transform:none; }
+  .yb{ flex:none; width:.78em; height:.727em; margin:.037em .16em 0 .1em; background:var(--accent); transform:scaleX(0); transform-origin:0; }
+  .k5.is-active .yb{ transition:transform .8s var(--e4) var(--sd); transform:none; }
+  .fs{ flex:none; width:.72em; height:.72em; margin:.04em .08em 0 .14em; opacity:0; transform:perspective(700px) rotateY(180deg); }
+  .fs svg{ display:block; width:100%; height:100%; }
+  .k5.is-active .fs{ opacity:1; animation:rot .72s cubic-bezier(.37,.03,0,1) calc(var(--sd) + .25s) both; transition:opacity .3s var(--sd); }
+  .st{ position:relative; transform:translate(-3%); display:flex; padding-top:19px; line-height:1.25; }
+  .k5.is-active .st{ transition:transform 1.25s var(--e1); transform:none; }
+  .st::before{ content:""; position:absolute; left:0; top:0; width:100%; height:1px; background:var(--ink); transform-origin:0; transform:scaleX(0); }
+  .k5.is-active .st::before{ transition:transform 1.2s var(--e1) .2s; transform:none; }
+  .k5.is-leaving .st::before{ transition-duration:.75s; transition-delay:0s; transform:scaleX(0); }
+
+  /* ================= SLIDE 4 — marquee rows ================= */
+  .k6 .mq{ animation-duration:20s; }
+  .k6 .r2{ animation-duration:18s; animation-delay:-4s; }
+  .k6 .r3{ animation-duration:27s; animation-direction:reverse; }
+  .k6 .rev{ animation-direction:reverse; }
+  .k6 .big{ transform-origin:0 0; transform:translate(-75%,-101%); }
+  .k6.is-active .big{ transition:transform 1.1s var(--e4) .1s; transform:none; }
+  .k6.is-leaving .big{ transition:transform .5s var(--e1) 0s; animation:.1s step-start .1s 5 blink2; transform:translate(-75%,-101%); }
+
+  /* ================= SLIDE 5 — zooming type grid ================= */
+  .lz{ position:absolute; width:0; height:0; transform:scale(var(--z,1)); will-change:transform; }
+  .tl{ position:absolute; width:0; height:0; }
+  .tx{ position:absolute; left:0; top:0; height:50px; font-family:var(--display); line-height:50px; font-size:56px; letter-spacing:-.045em; white-space:nowrap; will-change:transform,opacity; }
+  .tx.ac{ color:var(--accent); }
+  .slz{ position:absolute; left:-100px; top:-50px; width:80px; height:100px; }
+  .slz svg{ display:block; width:100%; height:100%; }
+
+  /* ================= EXTRA: HUD, selection box, logo ================= */
+  .bl{ mix-blend-mode:difference; }
+  .tb{ font-family:var(--display); }
+  .hud{ position:absolute; inset:0; font-size:10px; color:var(--ink-dim); opacity:0; transition:opacity .7s; pointer-events:none; }
+  .hud.on{ opacity:1; }
+  .hud b{ color:var(--ink); font-weight:500; }
+  .hb{ display:inline-flex; gap:3px; margin-left:8px; vertical-align:middle; }
+  .hb i{ width:16px; height:2px; background:var(--ink-faint); transition:background .4s; }
+  .hb i.on{ background:var(--accent); }
+  .hud .hs{ color:var(--accent); letter-spacing:.12em; animation:blink2 1.4s step-start infinite; }
+  .sel{ position:absolute; border:1px solid var(--accent); pointer-events:none; clip-path:inset(0 100% 100% 0); }
+  .k5.is-active .sel{ transition:clip-path 1.1s var(--e4) .9s; clip-path:inset(-30px); }
+  .k5.is-leaving .sel{ transition:opacity .4s; opacity:0; }
+  .sel .h{ position:absolute; width:7px; height:7px; background:#000; border:1px solid var(--accent); }
+  .sel .a1{ left:-4px; top:-4px; } .sel .a2{ right:-4px; top:-4px; } .sel .a3{ left:-4px; bottom:-4px; } .sel .a4{ right:-4px; bottom:-4px; }
+  .sel .chip{ position:absolute; font:500 9px/1 var(--mono); color:#000; background:var(--accent); padding:3px 5px; white-space:nowrap; text-transform:uppercase; }
+  .sel .c1{ left:-1px; top:-17px; } .sel .c2{ right:-1px; bottom:-17px; }
+  .logo{ display:block; width:269px; height:34px; margin-top:8px; background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAArkAAABYCAMAAADGBx+IAAAAwFBMVEVrpLKWqN1+pcHW4ux+pcF9fr6nqqyCqcSxydp6p8wA//+NsMp/f/+CqcV//f0AAP95ob11nr2s2Nx3oL3Z2uzT4OqyydoAAGAAf38A/wCyytrb5u1VVVX/AP8AAAD+/v5+pcH+/v6CqcaJss/+/v7+/v7+/v7+/v7+/v53oL7+/v5+vr5+pcF/f39+pcF+psIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjXKLkAAAAMHRSTlMPEZ790QQDYvwPAeECoAIBXPcLpQydbgUCAaJoAwEA/v4E/f4ucM+SUf6wBHECTiurGdT5AAAYUElEQVR42u2dC5ejqrKAMSaad7p7eu99HvcSwWdMYv//f3cAHxEoFE3szKwO65xZO2mDCB9lUVQVCL+KqRBMErVE7NvHlfPq3C4rZ7InibQnIQ99koeX7YJ1iLNdl5/WrDTNPRD+Eb0A7SL3qJZo2vFeT0au9iS/Nbn7piOupkte5D6T3Df/0i7+20Q0/WnkbjF2fP9SFM6qxNfhZXuomOUfVi9yn0aud/gKlUIR2b7IZXIWbagoAZ2t8B47AQ3Yf3Ki19iZ8w/zF7nPIxfPwkAu4QyfX+QiXHBmK3YR+/xVfvpi6C5wEVbfv8pzyL3iL6qAy8ZntV7/eHIJYlKVBrPZbM4IdQS51bxe4OuBi9yXzH0iuWdd5LLBuUwidP8ochGf0nQjNNyVv1uVMpfTyuTsuZrvL3KfRi5ZrwJN5vIBIT+dXKYPUC5f0apen1Xk8nm9r+b7i9ynkbvAF13kssEp2F9+Ork+13ILgSY3IXByufZAGa7rFVMgZi9ynylzvTkFyC0X0D+a3D1G3HjAAN0VDue2Irdg/xRM5NI5k8kvcp9FrnglQoUtoL0fvkKrNAJKQ0p3CJOKXI8J3dk1oOHFCV/kPo3c7fodJjf89ePJJQTtGLRiHoebFVmU5DrcVsbopeglc59HrgeYxGrDGDLveP4McvEB42LHRW5pCluV5CIijGXsC/9F7tPIRZBJbLrdiD+NXE6l4/g7KmQtrsgVa1q+H/GSuU8jd89ErkHm8qFak59NLlsGrISF5cKF7KoidyU2gdkS1o5cwkrvBXW5W7+xqWbszYY3s5fc0Q++MIvcu3cjoPEYQy554MgOKmuMOJXEWXEjw41c9uUspGFRk0u0Moza0ZjLN7O7r/ILMmQ0pU8WLeohV+2pgWMTUCO59+xGyA1pPg0lV+vb7iEx9uCoK/kemrCH4dWOI7q91uSSr81mhrZ9Mresl5Ao6uwk9vdMlKj+ARnT4VVVrNTV2F1FBtRet9NU/wCZe+uczhYbRe7FLHLFbsR5JLdlo7IsrsejatsgcpuHy0RF2fAHvHMN8MU9auazGZ/e7A2EanLLlasjyN2gVC312LD/R3GeHI8JNlEUZWnS6oskjzPS8YgEx+DN+PXlrapq0ozotfDPpHXDJI0jm/5Uf3c85uUPxV9jw+N3kltV2Wpxq0YbmbuSdyEUnZfOyXUktyTLk9Z41P04hFxxfWs46gckUF8TnGkAxWDF7HbalSnYBgZqWDuK0XDmXEtfMU7umrCecfCbkLnGsSFx1XaAXPF0cXIEStlbBnK1X8Sl2Mxy9Q+MICy/4Rnd2lVJTPqA4RekCfRDUb32l6yfXN6U1Fhjf3G4WUdak83o/bsRYKvKfhxArujnFBrZRB2SShgd7WqGrkzAdybTpfzdXPg1Bhsf4TWDtbQxtGWugVwO0024aQ2BO6l3DImBE51IMQUi3IbIcNUx7l5p8KkOtzITtY4g11RlVWN/uWJZ5IYzRJUvBseqsFYZOigXTY5s+QKkCDwkxi5qd2H7Sr3e2Nxfqy+nKAoHlQFO55XjrG6TmX1wHGQYm9ZtVHKNQ9diF8ON1znpquv2Mum6Kolwx6KgNQPB6geTS0AxU42slaUJqbsQYjdeFbr7oQY8Y6sEIFbkmvGXp0EPkCnQCyDiRhPjopm4zsHYjWB10nMq5PJpeewreQS2HtIWko4Z0OjcUcdVQuUYJnDrlxVw936Zm/c3uIfcX6Gs1q5U8y4Tus5AcLuIS+3IZZ/j3pFVhBIhmZUSQABo8o7OOlyR43h15Bm+stJ+a12vBCBXvYlMbk8ntQkgNjI36aylVLr7pkpq0k56mpqMkbl5f4M7yxarusEFrxT9gQarAxkCbtQjSGzItRxZ+cViK0sJTgFF7x5rBSRzFU4SpaXJ0aqkgDqvy9y+vhJvp8ziXqDZrq/2ZLjMtWhw3/pMVg34ovkD++H43YhecLnU7SW358Umv6p6kATEObFcyd1DrtoNbXKtHw9CFyDXopssxgXU9S3AZW0cSm5u0WDSjZkTqJrBYn1QvmQahHVAmlUHpX3cWNUCoAv9DlrTR4OUhVHkakuaRBrLAfCl+H5y+fPZXBYBnZUeR5Qecoc/dd8uBFuNIT0ozX43gs2UZMyDEkVfHVBLIu8fJjaaiD4YGXkwuYl5Bg3tpFid1mO6OMsHd6ZpSfAt5MJGoZu10lFU2jk3U16xo+5GeFdbkTtqhsp0DRzZXBK6FhqsFd73ktsh+yETyIBBHEfuyFlCyPFJ5CZdssRRYyFCXwSe7TXDmGO3GzF2hh57tVXL3rZRBKBr0jt91YaQO6KTFA+WCck9Ks4mIyXRA8jtFLpbzYqAuCM1W6OpRNvtRozVFWRyByi5Lbu2vTyFbODZ95E7Rozl+NvIjeW3X3R8GrkdSw8tFqLxIz9slYhKJnT3NiI3Pt5N7gj883Y39WIJvKyTe30nh5A7RoxF0syektxEFu/588jt0OA8dRdCZBzi5ayu3Kx2I0YrRTK5BvzzNI7jNOkZ2H5VAOrIe5WFAeSaxVjO3X6SPiW5k9wkZ6Wf66Trqqhb92qqSNOuO1mRm6RZFEWZyRpt3I/fAiJ3XzszrKjiQLbqD0jr2opOux+U9Cy8k6z+exT3Cd28x+YLbLRF30guLMby+gGjuJ8EuCOTuPKZjeIueOs7EYO3j7RqMLnZNI1N7iA3vl2SDlIXHG0dVjTrMO1vNrsRptd8X1/J5ELrl5Q0vuAY3FxrC924G0xYWcDfRK5hGLPG2R1+PnluJvD+zs3p3uw3wj2xmsui7juZkIvrxhqZsyE3J+2Qoqx3l0nahaDqhgMxqsA0cMhh1CZEErUe1LTrRzpNRnHLo5H/R5dfTZ8yAP09xt9Abl6RGxs2Z8nt+dKeHkpgnEgT4WA0X3AYCLkFY6RdvMC1JEpjs3HkJm0fTsMOn+FVqOuyl1YuputVWaP1Z2qC3y15f1+1x8Wgp8r7FF7SMT17ZCo0HNF05OYxj+K4RQuB76VI2YeBOinuJjdVHcgzqx0fSHVpjUV6tGhsNopczeCTWdvFyGLeocryzLDKbsS5L5p0C/Ro7qAPz3EczyHmUTkePx1ifNknn59eM/DO+QrS3VIXOvTYq+N9/Cs1LX+2rJVeVRzvEeTGNhvPmsgHVf28k1xg7yu3MJGCzblFN+LEQg7Cb5E+cvVnBm4Gvws1NNn6rDVa/696NHAtuNO88IEIpNzpXrc5OAPxdUHgHs+aH++RcVjaIumzuwuSxysLMLltTa5+kwOiJQG8wbJOUZj0SyfQhKEb/8CN8MZ8R6zcCcAR7SNXbwkgcOCBUWMh1KgdzXmBzrpMult2j/+6yw1P07903fLOrvufwi+q4pQnpkims+oH4XLn8xyfHoGe8mO14mEH+yvjdlXMZpv55n1T30IXSeiTj4brLkUpr6t1TOT7b77bFImJNf5q2soLupfcHEO+tanNOxGCs1MUQv7NNjIM4uVGbmRBnOG6Pl8xKwc+0FjpHArVN0EGcyuSGGreOEbTMOZJYN5PpyA4sX/okt14+R7UaeopbbToevDcZUhP/Fr+C55uzvf47t2tF9w6crHe3sOOyJIkvnsPQhdSdK97ftmS8laUhbKZxEbWKzV79tv6D8H7ptWLa/aSCemtucFqiCRGR6tBtqSOARWbsQPqyO18kCMrXuKG3MyOpZ6XAHgPYiO6wbtp50KEvmL22uKZ7RYwa8bXjrbGnZFF3ePy1KogfKvJFe8xNwxOLa7LZIm7Fd7fess91Qq4uOLzY1Ym96q+E7dQxx+JGUTlqk+n5d//x1QdgkV+61Yry04WvXiWtaeB0XfIzo5uJ3569lMAUFK7uA9iJd3jjs0+0KWuZ98SeujMaqpB5G7XqtWLOsr5Z1pq0lvAq6Z44J0a686Enuu2M0TeLBfkX/lxybjVUkIxMP1WJ7iSok1dqm6OBKelLE/WWzGDlMh7Lmbp5ouhq1ipafn7cjyv8kTtesHYkQuLXOCVCF9nlqvESlO3JjcfQq4h0jUaSi4YqBLbkKtlZAJS36mJGGSzWRtctAuBjGQMIZDcD/zX8h3OZEbDX6mJXOA0APq+bHcVQ+BCQzg9GqUX7CjhojQIGyKUDUU635P79Nx8xBh3b5d0kAuKsMjGsg/geSM3t9sb6BGqDyWXrDXLge5Soxl8mdAFAtLIdrULQVqkWzTkLvBbYEwHxXQGA7nw5e9uq6vWh11o/IlQtLeq0HVvyoL0F8MkHUBuSh5OLr6XXHwvubkp78q3kQt41DjorBSEFOcFeAvYMybUo5DA9vAb7SCSnjZDyA3orb8/vVlXminKNO2VrAEJdUGIkTWWjnihw9ZnELkxDKTlNggAVCPvvo/cxJrc5NtkLtJNYlBRDWPzhRaPhvBbGFiUityFGmysi9GlPbm1qsr7e41n3Q3hrnA4C08Su1XvKEr90EB9KA7t55CLx2VnGkPuWaVNnFQHFdUwVqixEXvV+6Gb3DXSspjdLF+tV7gtuUEjdGM1YhnKS+ngVFo2sntFlZorqxFDM1IhWyBfMvcucjWnBPYqBQvtPawH0hUUFNvkqiGb3O7K/0fVdZMtuQ3n2UK3VWhfFPh4VCaO4GErZ0eh86HOY9bk/tl6bvJkPdcxHcVjAYpiLNrqR0wIA6pOjSD3qugK9ESXrusuQaFrSW6lF2e/QkDLVtKg/GKjKVmZKUU8m74yoYanu/4WcsnzyX2ybQH1aYQd7/yZ/BoF7A8nGm7CMDhRgFzlcnqqLQkbqn8LkEup+hpo1mh/qzc8BSHfpKOtn+5QqlZbPZCkw/D12Xoicq3tucch9tyJyE3H60CTkLs3HsVjIeKU3QiixWDScsnkbk6AMZg4c0gvOB4/ZNstTC4Ng/LcaPnbv0Se3J369dIVW3VlM/g/u69yJSGt0YQVQXkJhbvBeVfvIPcRe2gTkRtPtoc2jtzFeJGrrrrVTP0M3MbAujxpVjFlzjQ66vEoLRmr71VyKfW578JF3a4r1RclLU/gt5rBXwTLvxhfUbmrrNiZz0hbn6FpyLX2W8DD/BYmItcybyDklDkFuVqM2UCh236T7hW3nBaLTLZpOxGystAyxh5JewZUpi6FXH42G956RDPV+eTzgzha4oi8QZdzy+9xrvqGSgvCOcPUkddnw8+AsyfXKvEZxEL0/eRCzrt2HhKTkHvuPhfCwrp1blkWCgpvDICyTcu/BxsxKkXX1VKe8Wij7V4N7vSJ4xDFZDH/vLnu0EqByeowIPltwK28d67PhpBrkyx9sH/uROQSm6hG0Cd8CnLXBAX0DnLb0Wpqqv7WBphGHudB8wmGDViV/qvK3K+rV2ooSpL1N33PhFF+bbrLvS2F6oapHhuy9o2Ge5rbk2sTE9GNzHeR2+syfkdMxBhytViIwei2AtIcYDe1Ra4uq9WtO6rvRDSiW/G4YUCtIQsy9fmRRPICLSzwpzYkSSPJNvIa7c79syHkWsWhgdG/2TPINUV73h2HNobcqzOn95H7flMDNXLDTm0BXy3vDZE7x2Xs8YLoXjPHRCaXza4PfeSaoHmlZcW967Mh5PbE/hJiyHlNnkFuBEPZijI2ZZZ/PLnALgTtK+r1TjO0SKutdd+lSu4H+biD3FlzGs4vndxUydZT4LMu3W4JZEJ5jRbcuT4bRC5IQzuFAZgUOu3MtzANuaYEGlJmh3H5FkaQu8eaL4KFPcEUG3FVrWItdcFVV/t833gzXlsQ5AqRtAyoSm4kkxte1ouu/F2y0KV0UHT+XeSactzUaWOIIc9t9BRyDQL1lk3H2MUPJ3evR5fN0Fd30fzK2uHtauh7g64bBupCio2KsqxvosXK2K9bKBBELvmsRNLyXSU30VdoXjN0S1fvWLMbb61OT0euKVeXSNVl+FvenVdsMnKNieL6Mpg9nFzNQYZj2FdUKxpPyW+s7xS6Lo+8perWwDJRhR3DvI7C9d+KovAL32f/+lVUriZz61kuex5wcmP1OEKKiFe969zTKdTYXZ6ocadlhMgdQO64/IgReQa549PnPpzcq+Ydy62k187ibVUzWstutFCQEXI0CBT3r1v0ghtQcEEnPUcGWNVoEDaTXCeXn3ehOrXhDyeuddoTVdg1evOMWp8NI3dExsu0J3/uZOSOzs75aHL1XQgLT1Qt80Ir1uVwQJrDZBnJa/BGlNdGjRf5Jxt8f1NgtFgsPiqhpFC+hAUmrzjDnmq1oDsGIKkcFyitttFaG3yw0KW/xqzPBpE7Istw0pezfCpyx2dEfjC5B6KFn837re66hw6do0NjHrbbkavJVRTd+kVOGLdMzeXxNk16FoXcjYHcd64EOrpKs7kUhbu8eTvK7LowuVrs/gTkDtcXor5zIqYjd2wW+geTq+9CWO10bjEQG7EYZh9uPBqUmSMyeSyXmyAUklocAlQ9gyW5gRv9m4kkLUiIL/iCm9JCFZ2BQvoCd4U7TE/uQByy3rN5JiN3xNEHk5CrJsGzjBTUMi+0jZ5b9bDVHnIlw0AJlLAtVJ/eSnRTa3IrMQnHcSp5F1pB7mo7Gv/GMeuzgeQOxCHuPw9tOnLH6guPJdfTCLRbSR+wpymzt8N6eoJ5NS8yGgA23dsHjm557qEtuW+EPQO5rixkf7tbDOuz/TeQOwjdGPefnjohuVb2hTifllzgrW83UmfIMIZuIhlElxrIrZMumVxv3pg4F+9Te5m7qLRxahknLCykMyD1iBZmNxG5A45PjW1y3U1Kbj+6+cSxv8BKy3KkdJfe22EoZSixDg0NqMGLvDu+jNLLdVt6nViSW+ncDn4LOyuWnCqOGRBsT4uRysJgcm1P5E4iq1RgU5Lbj25OJo791VVB6luOlB65JgWkLfCXll3mfenqm7Rlz7zRLnb5pODZnclfJgdKmFz+ZuiQuu1wDWHN+GdDAa/5wzeRi42+KoqHgFU+yEnJ5ejGneBOHLW+1TIj8JOo7QbGO2jiWvJi5UlIN63oRvafS2W/LHBvziV+eKLm/EwXdBUcooHkipWk0f9X2YzIsZ6fYeT+2ThyOQ+kR5ZF2DLp57TkimMckg51hkyrLQAmT3vnf80qoWTeOp/xwd9tqIhyoHS+czWTqds80j5yw1MAQsaQL8rmIjlAx4ZcTvsG0hi4K0Soueo5XRrQ9OQKjMwuK8c8AzJHP4dcQR98gFReuutOrC1oi3pkvWEEbL7N5SscVhVyigsrPlpxcdL2367jfFJSncPi0vd3iNsdqvy6ETaTKxm0ZE937APsnt7V3V++XwwkZUf4O8kVY07Ac+ySNDJwa5+FVDdf4EFZSNVZBrArZhf/8zTk5lXmrIuawWZmH5xNDihQf35pYge2uPD5QRFtEzD+WwdPDEfTp0shnm+2sZBueGA5qlXrLynZTktoLuWmtJX1q9hFpreKeb2h7i2WY2ex9emD1mfsprFa7A5vL31cM+mUwySNI2zkVkSpqTcDQSBam0ZXVrGLo/jW0EQcc1e1srsSYtM7DAv1qqw6JKHwL1Lxh7wcgZ8Xzd2v53nIocN7D3mrFXJWW8UETINlWj9o06f/9X9tmsRim5nvIH5URB0vh536hv5l959lQ1+S//Xm38rFlzNA8MnoMMWlTnU+n83+Vjrkr7pj5SbOnX/j0eSO/mUTXhBFWZZFURMbgX+3UrmSk6qdv2krBxURZ8EPemg5TDob7XxL8EHRlzgDBa28WuUwdZs8suaydg5VxUXxhRxdjP4T/HrjpDk7OlLrB8glWhmEBFE+kt4f9N/MsklDWi57/hBiW8mdDdYS5A7zivK0/LrNK1rIVy7hNrtL4Xwh/zLXwhwQaR85KMrHua2t7M9INkmtb7da/NN+QK/vMbbtivdnp90ZH2QXMsVkPp8HIe3I3vNdMlcftd9bTP0hzbQXuXXuLq5g6tm/oGT+VUfsEfI81JvbfvDIkrJeFcbrGjWnnHRmTPtmcl/lCeXaH9FLKVr/HpPUlJqKR1FcX+T+qGKT0zR8G5HDYJJZph2Q8RCR+yL3jxS5616RG8487/dorFHkzldo/SL3h4lcvxfcDTr8HroCWcOnVPDT4Bb4Re7PErm9frEM3NG7qg8XuXDs0d3azIvcP66s186s27mQb+j+JuAS+GAgfsrfGb/I/XlFchNTPRE2Pr7DTvrYgkByQ/qGPfwi9weKXYyLnbDkUu1Qh42P8H792zSVCV1xsrbUxsbJ50XuTytcYHn+bk6V5Hqb3Zf3+w2q0/g0CHeJnYPx/YaPF7l/Krti5LgPwmU2m7Mym12Krz1fE61/r5Zut9wZ0+et3M1832Hcbh+gzPwP31qGTp/UPSsAAAAASUVORK5CYII=) left center/contain no-repeat; }
+
+  /* ================= LOADER ================= */
+  .ov{ position:absolute; inset:0; z-index:50; background:#000; display:grid; place-items:center; transition:opacity .1s .75s; }
+  .ov.gone{ opacity:0; pointer-events:none; }
+  .rc{ position:relative; width:800px; height:506px; transform:skew(var(--slash-angle)) scaleX(0); }
+  .rc::before{ content:""; position:absolute; inset:0; background:var(--accent); transform-origin:center; }
+  .ov.go .rc{ transition:transform .79s var(--e4); transform:skew(0) scaleX(1); }
+  .ov.go .rc::before{ transition:transform 10s linear; transform:scale(1.1,1.2); }
+  .ov.lv .rc{ transition:transform .65s var(--e4) .3s; transform:skew(0) scale(1.8,1.6); }
+  .ov.go .rc{ animation:blink .02s step-end 30; }
+
+  .mk{ display:block; overflow:visible; }
+  .mk .rg{ transform-origin:50px 50px; animation:mk 16s linear infinite; }
+  .gr path.x{ animation:gp 5s ease-in-out infinite; }
+  .k6 .r4{ animation-duration:40s; }
+  @keyframes mk{ to{ transform:rotate(360deg) } }
+  @keyframes gp{ 50%{ stroke-opacity:.35 } }
+  @keyframes blink{ 0%,to{opacity:1} 50%{opacity:.3} }
+  @keyframes blink2{ 50%{opacity:.2} }
+  @keyframes mx{ to{transform:translate(-100%)} }
+  @keyframes spin{ 50%{transform:rotateY(180deg)} to{transform:rotateY(360deg)} }
+  @keyframes rot{ from{transform:perspective(1000px) rotateY(180deg)} to{transform:perspective(1000px) rotateY(0)} }
+
+  @media (prefers-reduced-motion: reduce){
+    .hero *,.hero *::before,.hero *::after{ transition:none!important; animation:none!important; }
+  }
+
+
+  /* ============================================================
+     SECTION SCAFFOLD — dossier grid
+     ============================================================ */
+  .section{
+    background: var(--bg-deep);
+    padding: clamp(64px, 9vw, 120px) 0;
+  }
+
+  .section--tone{
+    background: #000000;
+  }
+
+  .section__head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap: 20px;
+    margin-bottom: clamp(40px, 6vw, 72px);
+    flex-wrap:wrap;
+  }
+
+  .section__index{
+    font-size: 19.5px;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+  }
+
+  .section__title{
+    font-weight: 800;
+    font-size: clamp(22px, 2.6vw, 32px);
+    letter-spacing: -0.01em;
+  }
+
+  .dossier{
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0 clamp(24px, 3vw, 48px);
+  }
+
+  .dossier__label{
+    grid-column: 1 / 2;
+    font-size: 19.5px;
+    line-height: 1.15;
+    color: var(--ink-faint);
+    padding-top: 4px;
+  }
+  .dossier__label b{ color: var(--ink-dim); font-weight: 800; display:block; margin-bottom: 8px; }
+
+  .dossier__content{
+    grid-column: 2 / 5;
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(28px, 3vw, 48px);
+  }
+
+  /* ---- Media composition: square + two flanking accent blocks ----
+     Desktop: one flattened 4-col grid — row1 = label|card1|card2|card3,
+     row2 = accent-left|square(spans card1+card2 cols)|accent-right.
+     accent-left's fine vertical alignment to the label text (and the
+     square/accent-right's position relative to it) is computed in JS
+     via --shift-* custom properties, since it depends on the label's
+     rendered text height. Mobile redefines the areas entirely. */
+  .dossier--services,
+  .dossier--why,
+  .dossier--process{
+    grid-template-areas:
+      "label card1 card2 card3"
+      "accl  sq    sq    accr";
+    row-gap: clamp(28px, 3vw, 48px);
+    margin-bottom: var(--comp-bottom-space, 0px);
+  }
+  .dossier--services .dossier__label,
+  .dossier--why .dossier__label,
+  .dossier--process .dossier__label{ grid-area: label; }
+
+  /* Task-specific: enlarge the "Core capabilities" / "Positioning" labels
+     by 1.5x, tighten line-height to 0.9, and let them stretch across the
+     leftmost column plus the next one on desktop (grid stays intact —
+     card1/card2/card3 keep their own grid-area placement). */
+  .dossier--services .dossier__label b,
+  .dossier--why .dossier__label b,
+  .dossier--process .dossier__label b,
+  .dossier--services .dossier__label-text,
+  .dossier--why .dossier__label-text,
+  .dossier--process .dossier__label-text{
+    font-size: 1.5em;
+    line-height: 0.9;
+  }
+  @media (min-width: 861px){
+    .dossier--services .dossier__label,
+    .dossier--why .dossier__label,
+    .dossier--process .dossier__label{ grid-column: 1 / 3; }
+  }
+  .dossier--services .ga-card1,
+  .dossier--why .ga-card1,
+  .dossier--process .ga-card1{ grid-area: card1; }
+  .dossier--services .ga-card2,
+  .dossier--why .ga-card2,
+  .dossier--process .ga-card2{ grid-area: card2; }
+  .dossier--services .ga-card3,
+  .dossier--why .ga-card3,
+  .dossier--process .ga-card3{ grid-area: card3; }
+
+  .media-block{
+    grid-area: sq;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: #1c1d1f;
+    scale: calc(.5 + var(--progress-square, 0) * .5);
+    translate: 0 var(--shift-square, 0px);
+  }
+
+  .media-accent{
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 2;
+    overflow: hidden;
+    background: #1c1d1f;
+  }
+
+  /* ---- Parallax frame: video sits taller than its window and is
+     nudged up/down by the scroll engine below, exposing new footage
+     at the edges instead of just sitting still inside the crop. ---- */
+  .media-window__frame{
+    position: absolute;
+    left: 0; right: 0;
+    top: -10%; bottom: -10%;
+    will-change: transform;
+  }
+  .media-window__video{
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .media-accent--left{
+    grid-area: accl;
+    scale: calc(.5 + var(--progress-left, 0) * .5);
+    translate:
+      calc(-1 * clamp(24px, 2.6vw, 48px) * (1 - var(--progress-left, 0)))
+      calc(var(--shift-left, 0px) + clamp(90px, 9vw, 170px) * (1 - var(--progress-left, 0)));
+  }
+
+  .media-accent--right{
+    grid-area: accr;
+    align-self: start;
+    scale: calc(.5 + var(--progress-right, 0) * .5);
+    translate:
+      calc(clamp(24px, 2.6vw, 48px) * (1 - var(--progress-right, 0)))
+      calc(var(--shift-right, 0px) - clamp(90px, 9vw, 170px) * (1 - var(--progress-right, 0)));
+  }
+
+  .card{
+    padding-left: clamp(20px, 2vw, 28px);
+    border-left: 1px solid var(--line);
+  }
+
+  /* ---- 01_Services & 02_Why: the "01" and "03" text columns are pulled
+     down to sit just above the square / right rectangle at their
+     resting (max-scale) size, instead of top-aligned with "02" and
+     the label. JS computes --shift-card1/--shift-card3 from the
+     media boxes' own final shifted position (see align() below), so
+     this tracks their real layout instead of a guessed value. ---- */
+  @media (min-width: 861px){
+    .dossier--services .ga-card1,
+    .dossier--why .ga-card1,
+    .dossier--process .ga-card1{ translate: 0 var(--shift-card1, 0px); }
+    .dossier--services .ga-card3,
+    .dossier--why .ga-card3,
+    .dossier--process .ga-card3{ translate: 0 var(--shift-card3, 0px); }
+  }
+
+  .card__num{
+    font-size: 18px;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display:block;
+  }
+
+  .card__title{
+    font-weight: 800;
+    font-size: 18px;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+
+  .card__text{
+    color: var(--ink-dim);
+    font-size: 21.75px;
+    line-height: 1.15;
+  }
+
+  /* ---- Scroll-jacked reveal video (01_SERVICES) ----
+     Hidden by default; grown open by JS via --reveal-progress, which
+     the heavy-scroll engine drives instead of the page position until
+     it reaches 1 (see handleScrollInput in the script below). Sized
+     and positioned separately for mobile (below 861px) and desktop
+     (861px and up), since the two layouts place it differently. ---- */
+  .section-reveal{ display:none; }
+
+  /* process gets a stacked look since order matters */
+  .process-item + .process-item{ margin-top: 30px; padding-top: 30px; border-top: 1px solid var(--line); }
+  .process-item{ border-left: none; padding-left: 0; }
+  .process-item .card__num{ margin-bottom: 10px; }
+
+  /* ============================================================
+     CLOSING
+     ============================================================ */
+  .closing{
+    background: var(--bg-deep);
+    padding: clamp(80px, 12vw, 150px) 0;
+  }
+
+  .closing__title{
+    font-weight: 800;
+    font-size: clamp(28px, 4.4vw, 50px);
+    line-height: 1.12;
+    max-width: 18ch;
+    letter-spacing: -0.01em;
+  }
+
+  .closing__sub{
+    margin-top: 22px;
+    max-width: 46ch;
+    color: var(--ink-dim);
+    font-size: 23.25px;
+    line-height: 1.15;
+  }
+
+  .closing .link{ margin-top: 36px; display:inline-block; }
+
+  /* ============================================================
+     FOOTER (full-screen, video background, accent-blue)
+     ============================================================ */
+  .footer{
+    position: relative;
+    min-height: 100svh;
+    background: #000;
+    display: flex; flex-direction: column; justify-content: space-between;
+    gap: clamp(24px, 4vh, 64px);
+    padding: max(24px, 1.67vw) max(24px, 1.67vw) max(16px, 1.11vw);
+    overflow: hidden;
+    color: var(--accent);
+    font-weight: 800;
+  }
+  .footer__bg-video{
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; opacity: .8; z-index: 0; pointer-events: none;
+    filter: grayscale(35%) contrast(1.05);
+  }
+  .footer__scrim{
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: linear-gradient(0deg, rgba(0,0,0,.5), rgba(0,0,0,.5)),
+                linear-gradient(0deg, rgba(0,0,0,.55), rgba(0,0,0,.55));
+  }
+  .footer__top{
+    position: relative; z-index: 2;
+    border-top: max(5px, .35vw) solid var(--accent);
+    padding-top: max(24px, 1.67vw);
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;
+  }
+  .footer__title{
+    font-size: clamp(40px, 7.24vw, 104px);
+    letter-spacing: -.03em; line-height: .95;
+    color: var(--accent); max-width: 60%;
+  }
+  .footer__year{
+    font-size: clamp(64px, 16.24vw, 234px);
+    letter-spacing: -.05em; line-height: 1;
+    color: var(--accent); flex-shrink: 0;
+  }
+  .footer__middle{
+    position: relative; z-index: 2; flex: 1;
+    display: flex; justify-content: space-between; align-items: center; gap: 24px;
+  }
+  .footer__contacts{
+    display: flex; flex-direction: column; align-items: flex-end; text-align: right;
+    gap: clamp(6px, 1.2vh, 14px);
+  }
+  .footer__contacts a{
+    font-size: clamp(12px, .88vw, 13px);
+    letter-spacing: -.02em; line-height: 1;
+    color: var(--accent); transition: opacity .2s ease, transform .25s ease;
+  }
+  .footer__contacts a:hover{ opacity: .7; transform: translateX(-6px); }
+  .footer__nav{
+    position: relative; z-index: 2;
+    display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+    gap: clamp(6px, 1.2vh, 14px);
+  }
+  .footer__nav a{
+    font-size: clamp(12px, .88vw, 13px);
+    letter-spacing: -.02em; line-height: 1;
+    color: var(--accent); transition: opacity .2s ease, transform .25s ease;
+  }
+  .footer__nav a:hover{ opacity: .7; transform: translateX(6px); }
+  .footer__body{
+    position: relative; z-index: 2;
+    display: flex; flex-direction: column; gap: clamp(20px, 3vw, 32px);
+  }
+  .footer__cta-block{ display: flex; flex-direction: column; gap: clamp(16px, 2vw, 24px); }
+  .footer__cta-text{
+    font-size: clamp(18px, 2.24vw, 32px);
+    letter-spacing: -.03em; line-height: 1.1;
+    color: var(--accent); max-width: 60%;
+  }
+  .footer__cta-button{
+    width: 100%;
+    background: var(--accent); color: #000;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: clamp(12px, 1vw, 16px) max(24px, 1.67vw);
+    min-height: clamp(64px, 6.25vw, 90px);
+    cursor: pointer; overflow: hidden; text-align: left;
+    transition: opacity .2s ease;
+  }
+  .footer__cta-button:hover{ opacity: .88; }
+  .footer__cta-button-label{
+    font-size: clamp(20px, 2.24vw, 32px);
+    letter-spacing: -.03em; line-height: 1; color: #000;
+  }
+  .footer__cta-button-arrow{
+    width: clamp(20px, 1.67vw, 24px); height: clamp(20px, 1.67vw, 24px); flex-shrink: 0;
+    transition: transform .25s ease;
+  }
+  .footer__cta-button:hover .footer__cta-button-arrow{ transform: translateX(4px); }
+  .footer__cta-button-arrow svg{ width: 100%; height: 100%; display: block; }
+  .footer__bottom{
+    display: flex; justify-content: space-between; align-items: flex-end;
+    gap: 24px; flex-wrap: wrap;
+  }
+  .footer__logo{ display: block; flex-shrink: 0; margin-left: calc(max(28px, 2vw) * -0.713); }
+  .footer__logo img{ height: max(28px, 2vw); width: auto; max-width: none; }
+  .footer__links, .footer__address, .footer__copyright{
+    font-size: clamp(12px, .88vw, 13px);
+    letter-spacing: -.02em; color: var(--accent);
+  }
+  .footer__links{ display: flex; gap: clamp(10px, 1.11vw, 16px); flex-wrap: wrap; line-height: 1; }
+  .footer__links a{ transition: opacity .2s ease; }
+  .footer__links a:hover, .footer__address a:hover{ opacity: .7; }
+  .footer__links .underline{ text-decoration: underline; }
+  .footer__address{ line-height: 1.4; text-align: left; }
+  .footer__address p{ margin: 0; }
+  .footer__copyright{ line-height: 1; text-align: right; }
+
+  /* ============================================================
+     CONTACT PANEL (lead form) — lives OUTSIDE #scroll-container
+     because position:fixed inside a transformed element breaks
+     ============================================================ */
+  .contact-backdrop{
+    position: fixed; inset: 0; background: rgba(0,0,0,.8);
+    z-index: 1001; display: none;
+  }
+  .contact-backdrop.is-open{ display: block; }
+  .contact-panel{
+    display: none; flex-direction: column;
+    position: fixed; bottom: 0; right: 0;
+    left: max(80px, 9.86vw);
+    max-height: calc(100vh - clamp(24px, 4vh, 60px));
+    background: #c4c4c4; color: #000;
+    z-index: 1002; overflow-y: hidden;
+    font-family: var(--type); font-weight: 800;
+  }
+  .contact-panel.is-open{ display: flex; }
+  .contact-panel__inner{ display: flex; flex-direction: column; flex: 1; min-height: 0; }
+  .contact-panel__top-rule{
+    margin: max(24px, 1.67vw) max(24px, 1.67vw) 0;
+    border-top: 1px solid #000; flex-shrink: 0;
+  }
+  .contact-panel__header{
+    padding: max(16px, 1.11vw) max(24px, 1.67vw) 0;
+    display: flex; justify-content: flex-end; align-items: flex-start; flex-shrink: 0;
+  }
+  .contact-panel__close{
+    background: none; border: none; padding: 0; cursor: pointer;
+    font: inherit; font-size: max(20px, 1.4vw); line-height: 1;
+    letter-spacing: -.03em; color: #000;
+  }
+  .contact-panel__lead{
+    padding: min(max(32px, 2.2vw), 4vh) max(24px, 1.67vw) 0;
+    flex-shrink: 0; margin: 0;
+    font-size: max(64px, 4.44vw); line-height: .9; letter-spacing: -.05em;
+    text-indent: max(419px, 29.1vw);
+  }
+  .contact-panel__lead .muted{ color: #777; }
+  .contact-panel__lead .strong{ color: #000; }
+  .contact-panel__form{ display: flex; flex-direction: column; flex: 1; min-height: 0; }
+  .contact-panel__fields{
+    padding: min(max(48px, 3.33vw), 3vh) max(24px, 1.67vw) max(24px, 1.67vw);
+    flex: 1; overflow-y: auto; min-height: 0;
+  }
+  .contact-field__row{ display: flex; align-items: flex-start; }
+  .contact-field__num{
+    width: max(419px, 29.1vw); flex-shrink: 0;
+    font-size: max(20px, 1.4vw); line-height: 1; letter-spacing: -.03em;
+    padding: max(12px, .83vw) 0;
+  }
+  .contact-field__body{
+    flex: 1; display: flex; align-items: flex-start;
+    padding: max(12px, .83vw) 0;
+    border-bottom: .75px solid #000;
+    gap: max(20px, 1.39vw);
+  }
+  .contact-field__label{
+    flex-shrink: 0; width: max(160px, 11.1vw);
+    font-size: max(20px, 1.4vw); line-height: 1; letter-spacing: -.03em;
+  }
+  .contact-field__input-wrap{ flex: 5; position: relative; }
+  .contact-field__placeholder{
+    font-size: max(20px, 1.4vw); line-height: 1; letter-spacing: -.03em;
+    color: #777; pointer-events: none;
+    position: absolute; top: 0; left: 0; white-space: nowrap;
+  }
+  .contact-field__input-wrap.has-value .contact-field__placeholder{ display: none; }
+  .contact-field__input, .contact-field__textarea{
+    width: 100%; background: transparent; border: none; outline: none;
+    font: inherit; font-size: max(20px, 1.4vw); line-height: 1; letter-spacing: -.03em;
+    color: #000; padding: 0; appearance: none; -webkit-appearance: none;
+  }
+  .contact-field__textarea{ resize: none; display: block; }
+  .contact-field__body--message{ border-bottom: none; }
+  .contact-field__input-wrap--message{ min-height: 72px; }
+  .contact-field__placeholder--message{ white-space: normal; }
+  .contact-field__service{
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    width: 100%; background: none; border: 0; padding: 0; cursor: pointer;
+    font: inherit; text-align: left;
+  }
+  .contact-field__service-label{
+    font-size: max(20px, 1.4vw); line-height: 1; letter-spacing: -.03em; color: #777;
+  }
+  .contact-field__service.has-value .contact-field__service-label{ color: #000; }
+  .contact-field__plus{ font-size: max(20px, 1.4vw); line-height: 1; color: #000; }
+  .contact-field__options{ display: none; flex-direction: column; gap: 10px; padding-top: 14px; }
+  .contact-field__options.is-open{ display: flex; }
+  .contact-field__options button{
+    text-align: left; font: inherit; font-size: max(18px, 1.2vw);
+    letter-spacing: -.03em; line-height: 1; color: #000; padding: 0;
+  }
+  .contact-field__options button:hover{ color: #777; }
+  .contact-panel__submit{
+    display: flex; justify-content: space-between; align-items: center;
+    padding: max(20px, 1.39vw) max(24px, 1.67vw);
+    margin: 8px max(24px, 1.67vw) max(16px, 1.1vw);
+    background: var(--accent); border: none; cursor: pointer; flex-shrink: 0; overflow: hidden;
+    font: inherit; transition: opacity .2s ease;
+  }
+  .contact-panel__submit:hover{ opacity: .88; }
+  .contact-panel__submit-label{
+    display: block; font-size: max(20px, 1.4vw); line-height: 1; letter-spacing: -.03em; color: #000;
+  }
+  .contact-panel__submit-arrow{ width: max(24px, 1.67vw); height: max(24px, 1.67vw); flex-shrink: 0; }
+  .contact-panel__submit-arrow svg{ width: 100%; height: 100%; display: block; }
+
+  @media (max-width: 768px){
+    .footer{ min-height: 100svh; padding: 20px 16px 16px; gap: 28px; }
+    .footer__top{ flex-direction: column; align-items: flex-start; gap: 8px; padding-top: 16px; border-top-width: 4px; }
+    .footer__title{ font-size: clamp(36px, 11vw, 56px); max-width: 100%; }
+    .footer__year{ font-size: clamp(56px, 20vw, 96px); align-self: flex-end; }
+    .footer__middle{ align-items: flex-end; }
+    .footer__cta-text{ max-width: 100%; }
+    .footer__cta-button{ min-height: 64px; padding: 14px 18px; }
+    .footer__bottom{ flex-direction: column; align-items: flex-start; gap: 16px; }
+    .footer__copyright{ text-align: left; }
+    .contact-panel{ left: 0; top: 0; height: 100vh; height: 100dvh; max-height: 100dvh; padding-top: env(safe-area-inset-top, 0px); }
+    .contact-panel__top-rule{ margin: 12px 16px 0; }
+    .contact-panel__header{ padding: 12px 16px 0; }
+    .contact-panel__close{ font-size: 16px; padding: 10px 16px; background: #000; color: #fff; border-radius: 999px; }
+    .contact-panel__lead{ font-size: clamp(28px, 7vw, 44px); text-indent: 0; padding-top: 24px; }
+    .contact-panel__fields{ padding: 24px 16px; }
+    .contact-field__num{ width: 40px; font-size: 14px; }
+    .contact-field__body{ flex-direction: column; gap: 8px; padding: 14px 0; }
+    .contact-field__label{ width: auto; font-size: 16px; }
+    .contact-field__input-wrap{ width: 100%; }
+    .contact-field__placeholder, .contact-field__input, .contact-field__textarea, .contact-field__service-label, .contact-field__plus{ font-size: 16px; white-space: normal; }
+    .contact-field__placeholder--message{ position: static; margin-bottom: 8px; }
+    .contact-field__input-wrap--message{ min-height: 80px; }
+    .contact-panel__submit{ margin: 8px 16px 16px; padding: 18px 20px; }
+    .contact-panel__submit-label{ font-size: 20px; }
+  }
+
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media (max-width: 860px){
+    .dossier{ grid-template-columns: 1fr; }
+    .dossier__label{ grid-column: 1; margin-bottom: 20px; }
+    .dossier__content{ grid-column: 1; grid-template-columns: 1fr; gap: 32px; }
+    .dossier--services,
+    .dossier--why,
+    .dossier--process{
+      grid-template-columns: 1fr 1fr;
+      grid-template-areas:
+        "label label"
+        "card1 ."
+        "accl  accr"
+        "card2 card3"
+        "sq    sq";
+      row-gap: 24px;
+      column-gap: 16px;
+    }
+    .dossier--services .ga-card2,
+    .dossier--why .ga-card2,
+    .dossier--process .ga-card2,
+    .dossier--services .ga-card3,
+    .dossier--why .ga-card3,
+    .dossier--process .ga-card3{ border-top: none; padding-top: 0; }
+    .dossier--services .card__title,
+    .dossier--why .card__title,
+    .dossier--process .card__title{ font-size: calc(18px / 1.3); }
+    .dossier--services .card__text,
+    .dossier--why .card__text,
+    .dossier--process .card__text{ font-size: calc(21.75px / 1.3); line-height: 0.9; }
+    .media-block{ margin-top: 4px; }
+    /* Tablet portrait: the reveal video is a fixed 1:2 box that grows with the
+       screen width, while the text above the accent row does not — so on
+       wider screens it ran down over the right accent video. JS
+       (updateRevealClearance) measures the overlap and sets --reveal-clear;
+       the accent row is pushed down by exactly that much. 0 on phones. */
+    .media-accent{ margin-top: var(--reveal-clear, 0px); }
+
+    .media-accent--left{
+      translate:
+        calc(-1 * clamp(46px, 13vw, 84px) * (1 - var(--progress-left, 0)))
+        calc(var(--shift-left, 0px) + clamp(64px, 17vw, 120px) * (1 - var(--progress-left, 0)));
+    }
+    .media-accent--right{
+      translate:
+        calc(clamp(46px, 13vw, 84px) * (1 - var(--progress-right, 0)))
+        calc(var(--shift-right, 0px) - clamp(64px, 17vw, 120px) * (1 - var(--progress-right, 0)));
+    }
+    .card{ border-left: none; padding-left: 0; border-top: 1px solid var(--line); padding-top: 24px; }
+    .card:first-child{ border-top: none; padding-top: 0; }
+    .section__head{ flex-direction:column; align-items:flex-start; gap: 10px; }
+
+    /* ---- Services reveal video: sits on the RIGHT side of the label/
+       card1 row (negative z-index inside the isolated .wrap stacking
+       context keeps it clear of the page's other stacking, but still
+       behind the label/card1 text, which stay in normal flow on top of
+       it). Fixed box, top pinned right under the hero at the section's
+       own top padding — same "harmonious" gap every other section
+       opens with. Width and right offset are computed with the exact
+       same formula as the accl/accr grid columns (wrap's own side
+       padding + the 16px column-gap), and height uses the same
+       aspect-ratio: 1/2 as every other vertical accent video, so once
+       fully open it occupies exactly the same footprint as they do —
+       no side cropping, no mismatched box. No background is painted on
+       the box itself — only the video (scaled from 0) is ever visible,
+       so nothing marks the spot before it opens. The video scales up
+       from 0 anchored at its TOP-right corner as --reveal-progress
+       goes 0 → 1, so the growth starts high (right under the hero) and
+       unfolds downward, rather than growing up from the bottom. It
+       fills its box exactly like the other accent videos fill theirs
+       (object-fit: cover, no letterboxing). ---- */
+    .has-reveal .wrap{ position: relative; isolation: isolate; }
+    .section-reveal{
+      display: block;
+      position: absolute;
+      top: 0;
+      right: clamp(20px, 5vw, 64px);
+      left: auto;
+      width: calc((100% - (2 * clamp(20px, 5vw, 64px)) - 16px) / 2);
+      aspect-ratio: 1 / 2;
+      overflow: hidden;
+      background: transparent;
+      z-index: -1;
+      pointer-events: none;
+    }
+    .section-reveal__scale{
+      position: absolute;
+      inset: 0;
+      transform-origin: top right;
+      transform: scale(var(--reveal-progress, 0));
+      will-change: transform;
+    }
+
+    /* ---- Label letters assemble in step with the video reveal ----
+       Each character of the "Core capabilities" heading and its
+       description is wrapped (by JS, splitIntoChars) in its own span
+       with a random --char-random. While --reveal-progress runs 0→1
+       (the exact same value driving the video's scale, inherited here
+       from #services) each letter eases in from a small random offset
+       and fades up to full opacity, so the paragraph visibly "assembles"
+       at the same pace the video grows — and, since both read the same
+       live variable, scrolling back up un-assembles it again too. ---- */
+    .has-reveal .dossier__label .-s-word{ display: inline-block; }
+    .has-reveal .dossier__label .-s-char{
+      display: inline-block;
+      will-change: transform, opacity;
+      opacity: calc(0.1 + var(--reveal-progress, 0) * 0.9);
+      translate:
+        calc(var(--char-random, 0) * 4.8px * (1 - var(--reveal-progress, 0)))
+        calc(var(--char-random, 0) * 7.8px * (1 - var(--reveal-progress, 0)));
+    }
+  }
+
+  /* ---- Desktop version of the same reveal: video grows from its
+     top-right corner right under the "What we build" heading, with a
+     small harmonious gap under the title text (computed by JS into
+     --reveal-top-offset, see updateRevealTopOffset) rather than sitting
+     flush with the whole dossier grid — that kept the fully-open video
+     tall enough to run into card3's paragraph below it. Positioned
+     relative to the section's .wrap (same shared stacking context as
+     the mobile version, isolated + z-index:-1) so it always paints
+     behind ALL of the section's text, including the heading itself,
+     not just the dossier's own children. Width matches the real accr
+     column exactly (one of the 4 equal dossier columns, same
+     column-gap and the wrap's own side padding), so once open it lines
+     up with every other accent video. The label paragraph assembles in
+     step with it here too, reusing the same JS-split spans and CSS as
+     the mobile version above. ---- */
+  @media (min-width: 861px){
+    .has-reveal .wrap{ position: relative; isolation: isolate; }
+    .section-reveal{
+      display: block;
+      position: absolute;
+      top: var(--reveal-top-offset, 0px);
+      right: clamp(20px, 5vw, 64px);
+      left: auto;
+      width: calc((100% - (2 * clamp(20px, 5vw, 64px)) - (3 * clamp(24px, 3vw, 48px))) / 4);
+      aspect-ratio: 1 / 2;
+      overflow: hidden;
+      background: transparent;
+      z-index: -1;
+      pointer-events: none;
+    }
+    .section-reveal__scale{
+      position: absolute;
+      inset: 0;
+      transform-origin: top right;
+      transform: scale(var(--reveal-progress, 0));
+      will-change: transform;
+    }
+    .has-reveal .dossier__label .-s-word{ display: inline-block; }
+    .has-reveal .dossier__label .-s-char{
+      display: inline-block;
+      will-change: transform, opacity;
+      opacity: calc(0.1 + var(--reveal-progress, 0) * 0.9);
+      translate:
+        calc(var(--char-random, 0) * 4.8px * (1 - var(--reveal-progress, 0)))
+        calc(var(--char-random, 0) * 7.8px * (1 - var(--reveal-progress, 0)));
+    }
+  }
+
+
+
+
+
+  /* ---- Adaptive label: letters keep their original colours, but any
+     letter that currently sits over a LIGHT part of the reveal video
+     gets .on-light from JS (updateAdaptive) and turns dark so it stays
+     readable. Falls back to a soft dark halo if the video can't be
+     sampled. ---- */
+  .has-reveal .dossier__label .-s-char{ transition: color .25s ease, text-shadow .25s ease; }
+  .has-reveal .dossier__label .-s-char.on-light{ color: rgba(10,10,12,.9); }
+  .has-reveal.no-sample .dossier__label .-s-char{ text-shadow: 0 0 6px rgba(0,0,0,.55), 0 0 14px rgba(0,0,0,.35); }
+
+  /* ---- Text reveal on appear: blur + rise, by word or by letter ---- */
+  .ta-ready{ visibility: visible; }
+  .ta-ready .ta-word{ display: inline-block; white-space: nowrap; }
+  .ta-ready .ta-unit{
+    display: inline-block;
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(.35em);
+    transition:
+      opacity .9s ease calc(var(--i) * var(--stagger)),
+      filter .9s ease calc(var(--i) * var(--stagger)),
+      transform .9s cubic-bezier(.2,.7,.2,1) calc(var(--i) * var(--stagger));
+  }
+  .ta-ready.ta-in .ta-unit{ opacity: 1; filter: blur(0); transform: none; }
+  /* layers only exist while an element is actually animating */
+  .ta-ready.ta-in:not(.ta-done) .ta-unit{ will-change: opacity, transform, filter; }
+  /* long paragraphs: no blur at all (opacity + rise only, compositor-cheap) */
+  .ta-soft .ta-unit{
+    filter: none !important;
+    transition:
+      opacity .8s ease calc(var(--i) * var(--stagger)),
+      transform .8s cubic-bezier(.2,.7,.2,1) calc(var(--i) * var(--stagger));
+  }
+  .ta-soft.ta-in:not(.ta-done) .ta-unit{ will-change: opacity, transform; }
+  /* once finished, drop the filter/layers so scrolling stays cheap */
+  .ta-ready.ta-done .ta-unit{ filter: none; transition: none; will-change: auto; }
+  @media (prefers-reduced-motion: reduce){
+    .ta-ready .ta-unit{ opacity: 1; filter: none; transform: none; transition: none; }
+  }
+
+  /* ============================================================
+     SQUARE VIDEO TAKEOVER (section 01) — 3 pinned phases
+       1) square video grows to the full viewport
+       2) column "04" scrolls over it, words appearing with the scroll
+       3) video shrinks back into the square window
+     then the page scrolls on to section 02. Driven by the "sq" gate
+     in the heavy-scroll engine (script at the bottom).
+     ============================================================ */
+  .sq-takeover{
+    --sq-pad: clamp(20px, 5vw, 64px);
+    --sq-w: min(560px, calc(100vw - 2 * var(--sq-pad)));
+    position: fixed;
+    left: 0; top: 0;
+    width: 0; height: 0;
+    overflow: hidden;
+    background: #1c1d1f;
+    z-index: 500;               /* above page content, below the menu plate (900) */
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .sq-takeover.is-on{ visibility: visible; }
+  .sq-takeover__video{
+    position: absolute;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    will-change: transform;
+  }
+  .sq-takeover__dim{
+    position: absolute; inset: 0;
+    background: #000;
+    opacity: 0;
+  }
+
+  /* PINNED TEXT LAYOUT — mirrors the hero title: 4-column grid on desktop,
+     3-column on mobile, every line on its own "level" (stepped shift).
+       desktop: title steps right over 3 levels, lead sits under the first
+                step, a rule is drawn, then the 4 points cascade like stairs
+       mobile : zig-zag title, lead on the right, 2-column zig-zag points   */
+  .sq-col{
+    position: absolute;
+    top: 0;
+    left: max(0px, calc((100vw - 1360px) / 2));
+    width: min(100vw, 1360px);
+    padding: 0 var(--sq-pad);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    column-gap: 1.2vw;
+    row-gap: clamp(8px, 1.6vh, 18px);
+    align-items: end;
+    /* white text + difference blend: the colour adapts to whatever the video shows behind it
+       (same trick as the hero text of productionportugal) */
+    color: #fff;
+    mix-blend-mode: difference;
+    transform-origin: 0 0;
+    visibility: hidden;
+    will-change: transform;
+  }
+  .sq-col__title, .sq-col__list{ display: contents; }
+  .sq-col__num{
+    grid-column: 1; grid-row: 2; justify-self: end;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-weight: 500;
+    font-size: clamp(11px, 1vw, 15px);
+    line-height: 1;
+    padding-bottom: .9em;
+    color: var(--accent);
+  }
+  .sq-t{
+    display: block;
+    width: fit-content;
+    white-space: nowrap;
+    font-weight: 800;
+    font-size: clamp(40px, min(6.4vw, 10.5vh), 118px);
+    line-height: .92;
+    letter-spacing: -.045em;
+  }
+  .sq-t:nth-of-type(1){ grid-column: 1 / 4;  grid-row: 1; }
+  .sq-t:nth-of-type(2){ grid-column: 2 / -1; grid-row: 2; }
+  .sq-t:nth-of-type(3){ grid-column: 3 / -1; grid-row: 3; }
+  .sq-t--a{ color: var(--accent); }
+  .sq-t--a::after{ content: "\2198"; font-size: .32em; margin-left: .2em; vertical-align: .9em; letter-spacing: 0; font-weight: 400; }
+  .sq-col__text{
+    grid-column: 1 / 3; grid-row: 3;
+    align-self: end;
+    max-width: 40ch;
+    font-size: clamp(15px, 1.3vw, 20px);
+    line-height: 1.22;
+  }
+  .sq-rule{
+    display: block;
+    grid-column: 1 / -1; grid-row: 4;
+    height: 1px;
+    margin-top: clamp(10px, 2vh, 22px);
+    background: var(--line-strong);
+    transform-origin: left center;
+    transform: scaleX(0);
+  }
+  .sq-it{
+    list-style: none;
+    grid-row: 5;
+    align-self: start;
+    padding-right: .6vw;
+    font-size: clamp(14px, 1.2vw, 18px);
+    line-height: 1.2;
+    margin-top: clamp(12px, 2vh, 22px);
+  }
+  .sq-it i{ font-style: normal; color: var(--accent); margin-right: .35em; }
+  .sq-it:nth-child(1){ grid-column: 1; }
+  .sq-it:nth-child(2){ grid-column: 2; margin-top: calc(clamp(12px, 2vh, 22px) + clamp(22px, 4.2vh, 46px)); }
+  .sq-it:nth-child(3){ grid-column: 3; margin-top: calc(clamp(12px, 2vh, 22px) + 2 * clamp(22px, 4.2vh, 46px)); }
+  .sq-it:nth-child(4){ grid-column: 4; margin-top: calc(clamp(12px, 2vh, 22px) + 3 * clamp(22px, 4.2vh, 46px)); }
+
+  @media (max-width: 860px){
+    .sq-col{ grid-template-columns: repeat(3, 1fr); column-gap: 6px; row-gap: 8px; }
+    .sq-col__num{ grid-column: 1 / -1; grid-row: 1; justify-self: start; padding-bottom: .4em; }
+    .sq-t{ font-size: clamp(34px, 10.8vw, 64px); line-height: 1; letter-spacing: -.04em; }
+    .sq-t:nth-of-type(1){ grid-column: 1 / -1; grid-row: 2; }
+    .sq-t:nth-of-type(2){ grid-column: 1 / -1; grid-row: 3; justify-self: end; }
+    .sq-t:nth-of-type(3){ grid-column: 2 / -1; grid-row: 4; }
+    .sq-col__text{ grid-column: 2 / -1; grid-row: 5; align-self: start; margin-top: 10px; font-size: clamp(14px, 3.9vw, 17px); }
+    .sq-rule{ grid-row: 6; margin-top: 6px; }
+    .sq-it{ font-size: clamp(13px, 3.5vw, 16px); margin-top: 0; padding-right: 0; }
+    .sq-it:nth-child(1){ grid-column: 1 / 3;  grid-row: 7; margin-top: 8px; }
+    .sq-it:nth-child(2){ grid-column: 2 / -1; grid-row: 8; margin-top: 0; }
+    .sq-it:nth-child(3){ grid-column: 1 / 3;  grid-row: 9; margin-top: 0; }
+    .sq-it:nth-child(4){ grid-column: 2 / -1; grid-row: 10; margin-top: 0; }
+  }
+
+  /* line wipe (as the hero of productionportugal): a white bar covers the line from the left,
+     the text appears under it, the bar leaves to the right. Driven by sqApplyText() in engine.js */
+  .sq-line{ position: relative; }
+  .sq-line.sq-ln{ display: block; }
+  .sq-line__c{ visibility: hidden; }
+  .sq-line__m{
+    position: absolute;
+    inset: -.06em -.05em;
+    background: #fff;
+    transform: scaleX(0);
+    transform-origin: left center;
+    pointer-events: none;
+    will-change: transform;
+  }
+  .sq-t--a:not(.is-revealed)::after{ opacity: 0; }
