@@ -1,0 +1,115 @@
+{{- $h := partial "data.html" (dict "name" "home" "lang" site.Language.Lang) -}}
+{{- $title := $h.title -}}
+{{- $desc := $h.description -}}
+{{- if .IsHome -}}
+  {{- with .Params.seo_title }}{{ $title = . }}{{ end -}}
+  {{- with .Description }}{{ $desc = . }}{{ end -}}
+{{- else -}}
+  {{- $title = printf "%s — %s" .Title $h.org.name -}}
+  {{- with .Description }}{{ $desc = . }}{{ end -}}
+{{- end -}}
+{{- $canon := partial "url.html" . -}}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ $title }}</title>
+<meta name="description" content="{{ $desc }}">
+<meta name="theme-color" content="#000000">
+<link rel="canonical" href="{{ $canon }}">
+{{ range .AllTranslations }}<link rel="alternate" hreflang="{{ .Language.Lang }}" href="{{ partial "url.html" . }}">
+{{ end }}
+{{- range .AllTranslations }}{{ if eq .Language.Lang "en" }}<link rel="alternate" hreflang="x-default" href="{{ partial "url.html" . }}">
+{{ end }}{{ end }}
+<meta property="og:type" content="{{ if .IsHome }}website{{ else }}article{{ end }}">
+<meta property="og:title" content="{{ $title }}">
+<meta property="og:description" content="{{ $desc }}">
+<meta property="og:url" content="{{ $canon }}">
+{{ with $h.og_image }}<meta property="og:image" content="{{ . }}">
+<meta name="twitter:card" content="summary_large_image">{{ end }}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+{{ $fonts := "https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" | safeURL }}
+<link rel="preload" as="style" href="{{ $fonts }}" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="{{ $fonts }}"></noscript>
+<link rel="preload" as="image" href="{{ $h.logo.url }}" fetchpriority="high">
+
+{{/* Главная — тяжёлый дизайн (main.css), внутренние страницы — лёгкая база */}}
+{{ $files := slice }}
+{{ $target := "css/page.css" }}
+{{ if .IsHome }}
+  {{ $files = slice (resources.Get "css/main.css") (resources.Get "css/extra.css") (resources.Get "css/menu.css") }}
+  {{ $target = "css/home.css" }}
+{{ else }}
+  {{ $files = slice (resources.Get "css/base.css") (resources.Get "css/menu.css") (resources.Get "css/inner.css") }}
+{{ end }}
+{{ $css := $files | resources.Concat $target | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
+
+{{ if .IsHome }}
+{{ $ld := dict
+  "@context" "https://schema.org"
+  "@type" "ProfessionalService"
+  "name" $h.org.name
+  "url" (partial "url.html" site.Home)
+  "description" $desc
+  "telephone" $h.contacts.phone
+  "email" $h.contacts.email
+  "sameAs" (slice $h.contacts.telegram)
+  "address" (dict "@type" "PostalAddress" "addressLocality" $h.org.locality "addressCountry" $h.org.country) }}
+<script type="application/ld+json">{{ $ld | jsonify | safeJS }}</script>
+{{ end }}
+
+{{/* =====================================================================
+   PAGE TRANSITION — по механике segerman.dev (разобрана из app/World.js референса).
+   Вся логика в этом блоке; чтобы отключить — удалите его целиком.
+
+   1) ПЕРЕХОД (нативные View Transitions: Chrome/Edge 126+, Safari 18.2+; в остальных — обычная навигация)
+      • новая страница открывается жёсткой маской, поднимающейся снизу: высота 0 → 100%,
+        ширина 80% → 100% по центру; 1.2 s, easeInOutQuart (в референсе: step(uv.y,uBgOffset) * hMask)
+      • старая страница одновременно линейно затухает в цвет подложки за 1 s (uTransAlpha 1 → 0)
+   2) ВЫЕЗД ТЕКСТОВ: после подъёма маски (с 0.68 s) блоки выезжают снизу из-под маски,
+      power3.out (= easeOutQuart), 1.2 s, ступенька между блоками 0.12 s.
+      Включается атрибутом data-reveal на блочном элементе; style="--i:N" задаёт порядок.
+      Для заглушек страниц (.page__title, .page__lead, .page__list li, .page__content > *) — автоматически.
+   Настройки (переменные у :root ниже):  --pt-slow: 3 — замедлить в 3 раза для отладки;
+   --pt-veil — цвет, в который затухает старая страница.
+   ===================================================================== */}}
+<script>
+(function(d,w){
+  var h=d.documentElement; h.classList.add('pt-js');
+  /* переход идёт (Chrome/Safari): тексты стартуют на 0.68 s; иначе — почти сразу */
+  w.addEventListener('pagereveal',function(e){ if(e.viewTransition) h.classList.add('pt-nav'); });
+  d.addEventListener('DOMContentLoaded',function(){
+    var n=0;
+    [].forEach.call(d.querySelectorAll('[data-reveal],.page__title,.page__lead,.page__list li,.page__content>*'),function(el){
+      if(el.parentElement && el.parentElement.closest('[data-rv]')) return;      /* вложенные не оборачиваем */
+      var m=d.createElement('span'); m.className='rv';
+      while(el.firstChild) m.appendChild(el.firstChild);
+      el.appendChild(m); el.setAttribute('data-rv','');
+      if(!el.style.getPropertyValue('--i')) el.style.setProperty('--i',n);
+      n++;
+    });
+    h.classList.add('pt-ready');
+  });
+})(document,window);
+</script>
+<style id="pt-css">
+:root{--pt-slow:1;--pt-veil:#0a0f1a}
+@media (prefers-reduced-motion:no-preference){
+  @view-transition{navigation:auto}
+  ::view-transition{background:var(--pt-veil)}
+  ::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal}
+  ::view-transition-old(root){animation:pt-out calc(1s*var(--pt-slow)) linear both}
+  ::view-transition-new(root){animation:pt-in calc(1.2s*var(--pt-slow)) cubic-bezier(.76,0,.24,1) both}
+}
+@keyframes pt-out{to{opacity:0}}
+@keyframes pt-in{from{clip-path:inset(100% 10% 0 10%)}to{clip-path:inset(0 0 0 0)}}
+
+/* выезд текстов из-под маски */
+html.pt-nav{--pt-in:.68s}
+html.pt-js:not(.pt-ready) :is([data-reveal],.page__title,.page__lead,.page__list li,.page__content>*){visibility:hidden}
+[data-rv]{overflow:hidden;padding-bottom:.12em;margin-bottom:-.12em}
+[data-rv]>.rv{display:block;animation:pt-rise calc(1.2s*var(--pt-slow)) cubic-bezier(.165,.84,.44,1) both;animation-delay:calc((var(--pt-in,.1s) + var(--i,0)*.12s)*var(--pt-slow))}
+@keyframes pt-rise{from{transform:translateY(110%)}to{transform:none}}
+@media (prefers-reduced-motion:reduce){[data-rv]>.rv{animation:none}}
+</style>
