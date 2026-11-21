@@ -1,0 +1,28 @@
+{
+  "slides": [
+    {
+      "slug": "atlas-studio",
+      "title": ["Atlas", "Studio"],
+      "type": "Website",
+      "services": "Design, Development",
+      "year": "2026",
+      "video": "https://raw.githubusercontent.com/Ramashery/Dev3/refs/heads/main/video/g1.mp4"
+    },
+    {
+      "slug": "nordic-light",
+      "title": ["Nordic", "Light"],
+      "type": "E-commerce",
+      "services": "Design, Development, SEO",
+      "year": "2026",
+      "video": "https://raw.githubusercontent.com/Ramashery/Dev3/refs/heads/main/video/v1.mp4"
+    },
+    {
+      "slug": "terra-cafe",
+      "title": ["Terra", "Cafe"],
+      "type": "Landing page",
+      "services": "Branding, Development",
+      "year": "2025",
+      "video": "https://raw.githubusercontent.com/Ramashery/Dev3/refs/heads/main/video/t1.mp4"
+    }
+  ]
+}
