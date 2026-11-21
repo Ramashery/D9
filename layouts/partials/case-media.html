@@ -1,0 +1,29 @@
+{{- /* Медиа-блок страницы кейса (фото или видео).
+       dict: "m"     — {type: image|video, src, alt, poster, mobile}
+             "ratio" — "16-9" | "4-5"
+             "hero"  — true для главного медиа (грузится сразу, у него может быть mobile-версия 4:5) */ -}}
+{{- $m := .m -}}
+{{- $type := $m.type | default "image" -}}
+<figure class="cm cm--{{ .ratio }}{{ if and .hero $m.mobile }} cm--has-m{{ end }}" data-parallax>
+  <div class="cm__frame" data-frame>
+    {{- if eq $type "video" }}
+    <video class="cm__media" muted loop playsinline preload="none" data-src="{{ $m.src }}"{{ with $m.poster }} poster="{{ . }}"{{ end }} aria-label="{{ $m.alt }}"></video>
+    {{- else if and .hero $m.mobile }}
+    <picture>
+      <source media="(max-width: 639px)" srcset="{{ $m.mobile }}">
+      <img class="cm__media" src="{{ $m.src }}" alt="{{ $m.alt }}" fetchpriority="high" decoding="async">
+    </picture>
+    {{- else }}
+    <img class="cm__media" src="{{ $m.src }}" alt="{{ $m.alt }}"{{ if not .hero }} loading="lazy"{{ end }} decoding="async">
+    {{- end }}
+  </div>
+  {{- if eq $type "video" }}
+  <button type="button" class="cm__toggle" data-toggle aria-pressed="false" aria-label="{{ i18n "case_pause" }}" data-label-pause="{{ i18n "case_pause" }}" data-label-play="{{ i18n "case_play" }}">
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="11" stroke="currentColor" stroke-opacity=".35"/>
+      <path class="cm__ico-pause" d="M9.5 8.5v7M14.5 8.5v7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      <path class="cm__ico-play" d="M10 8.6v6.8l5.6-3.4z" fill="currentColor"/>
+    </svg>
+  </button>
+  {{- end }}
+</figure>
