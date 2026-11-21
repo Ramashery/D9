@@ -1,0 +1,80 @@
+{{ define "main" }}
+{{- /* Страница кейса. Данные — из front matter content/<lang>/works/<slug>.md (см. atlas-studio.md).
+       Хедер (nav.html), футер (footer.html), контакт-панель и «тяжёлый» скролл — как на главной. */ -}}
+{{- $hero := .Params.hero -}}
+{{- $intro := .Params.intro -}}
+{{- $sections := .Params.sections | default slice -}}
+{{- $meta := .Params.meta | default slice -}}
+
+{{- /* пункты бокового содержания: Challenge (intro) + секции */ -}}
+{{- $nav := slice -}}
+{{- with $intro }}{{ $nav = $nav | append (dict "id" (.id | default "challenge") "label" (.label | default "Challenge")) }}{{ end -}}
+{{- range $sections }}{{ $nav = $nav | append (dict "id" (.id | default (.title | anchorize)) "label" .title) }}{{ end -}}
+
+<div id="scroll-container">
+  <main id="main" class="case" data-case>
+    <div class="case__layout">
+      <div class="case__spacer" aria-hidden="true"></div>
+
+      <article class="case__content">
+        {{- with $hero }}
+        <div class="case__hero">{{ partial "case-media.html" (dict "m" . "ratio" "16-9" "hero" true) }}</div>
+        {{- end }}
+
+        <header class="case__titleblock">
+          <h1 class="case__h1">{{ .Title }}</h1>
+          {{ with .Params.subtitle }}<p class="case__sub">{{ . }}</p>{{ end }}
+          {{ with $meta }}<p class="case__tags">{{ range $i, $t := . }}{{ if $i }}<i aria-hidden="true"></i>{{ end }}<span>{{ $t }}</span>{{ end }}</p>{{ end }}
+        </header>
+
+        {{- with $intro }}
+        <section class="cs" id="{{ .id | default "challenge" }}" data-spy>
+          <div class="cs__head">
+            <div class="cs__label cs__label--title rv">{{ .heading }}</div>
+            <div class="cs__text rv">{{ range .text }}{{ . | markdownify }}{{ end }}</div>
+          </div>
+          {{ partial "case-rows.html" . }}
+        </section>
+        {{- end }}
+
+        {{- range $sections }}
+        <section class="cs" id="{{ .id | default (.title | anchorize) }}" data-spy>
+          <div class="cs__head">
+            <h2 class="cs__label rv">{{ .title }}</h2>
+            <div class="cs__text rv">{{ range .text }}{{ . | markdownify }}{{ end }}</div>
+          </div>
+          {{ partial "case-rows.html" . }}
+        </section>
+        {{- end }}
+
+        {{- with .NextInSection }}
+        <a class="case-next rv" href="{{ .RelPermalink }}">
+          <span class="case-next__label">{{ i18n "case_next" }}</span>
+          <span class="case-next__title">{{ .Title }}</span>
+          <span class="case-next__arrow" aria-hidden="true">&rarr;</span>
+        </a>
+        {{- end }}
+      </article>
+    </div>
+  </main>
+
+  {{ partial "footer.html" . }}
+</div>
+
+{{- /* боковая панель — вне #scroll-container (position:fixed внутри transform не работает) */}}
+<aside class="case-side" data-side aria-label="{{ i18n "case_contents" }}">
+  <div class="case-side__head" aria-hidden="true">
+    <p class="case-side__title">{{ .Title }}</p>
+    {{ with .Params.subtitle }}<p class="case-side__sub">{{ . }}</p>{{ end }}
+    {{ with $meta }}<p class="case-side__tags">{{ range $i, $t := . }}{{ if $i }}<i></i>{{ end }}<span>{{ $t }}</span>{{ end }}</p>{{ end }}
+  </div>
+  <nav class="case-side__nav" aria-label="{{ i18n "case_contents" }}">
+    {{- range $nav }}
+    <a href="#{{ .id }}" data-spy-link="{{ .id }}">{{ .label }}</a>
+    {{- end }}
+  </nav>
+  <a class="case-side__back" href="{{ .CurrentSection.RelPermalink }}">&larr; {{ i18n "case_back" }}</a>
+</aside>
+
+{{ partial "contact.html" . }}
+{{ end }}
