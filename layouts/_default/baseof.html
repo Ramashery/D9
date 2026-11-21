@@ -1,0 +1,16 @@
+{{- /* каталог кейсов (/works) — полноэкранное приложение: без футера, без прокрутки страницы */ -}}
+{{- $wk := and (eq .Section "works") (eq .Kind "section") -}}
+{{- /* страница кейса (/works/<slug>/) — тяжёлый скролл и футер как на главной, без футера внутренних страниц */ -}}
+{{- $case := and (eq .Section "works") (eq .Kind "page") -}}
+<!DOCTYPE html>
+<html lang="{{ .Language.Lang }}"{{ if not .IsHome }} class="is-inner{{ if $wk }} is-works{{ end }}{{ if $case }} is-case{{ end }}"{{ end }}>
+<head>
+{{ partial "head.html" . }}
+</head>
+<body class="{{ if .IsHome }}is-home{{ else }}is-inner{{ if $wk }} is-works{{ end }}{{ if $case }} is-case{{ end }}{{ end }}">
+{{ partial "nav.html" . }}
+{{ block "main" . }}{{ end }}
+{{ if and (not .IsHome) (not $wk) (not $case) }}{{ partial "footer-inner.html" . }}{{ end }}
+{{ partial "scripts.html" . }}
+</body>
+</html>
