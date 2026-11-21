@@ -1,0 +1,8 @@
+{{- /* Ряды медиа секции: layout "full" — одно медиа 16:9 на всю ширину, "pair" — два медиа 4:5 рядом */ -}}
+{{- range .media }}
+  {{- if eq .layout "pair" }}
+<div class="cm-pair rv">{{ range .items }}{{ partial "case-media.html" (dict "m" . "ratio" "4-5") }}{{ end }}</div>
+  {{- else }}
+<div class="cm-row rv">{{ partial "case-media.html" (dict "m" . "ratio" "16-9") }}</div>
+  {{- end }}
+{{- end }}
