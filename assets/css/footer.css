@@ -1,0 +1,269 @@
+/* Футер и панель контактов — вынесено из main.css (главной) без изменений,
+   чтобы страницы кейсов выглядели в футере как главная. Не редактируйте здесь дизайн —
+   правьте в main.css и копируйте блок заново. */
+  /* ── Глобальные правила главной (main.css), на которые опирается футер ──
+   На главной они действуют на всю страницу (*{margin:0;padding:0}, a{text-decoration:none}, body{line-height:1.15}),
+   а на внутренних страницах база другая (base.css). Чтобы футер и контакт-панель выглядели ТОЧНО как на главной,
+   те же правила применяются здесь только к ним. :where() даёт нулевую специфичность — как у «*» на главной. */
+:where(.footer, .footer *, .contact-panel, .contact-panel *, .contact-backdrop){ box-sizing: border-box; margin: 0; padding: 0; }
+:where(.footer, .contact-panel){ font-family: var(--type); font-weight: 800; line-height: 1.15; -webkit-font-smoothing: antialiased; }
+:where(.footer a, .contact-panel a){ color: inherit; text-decoration: none; }
+:where(.footer, .contact-panel) :focus-visible{ outline: 2px solid var(--accent); outline-offset: 3px; }
+:where(.footer img, .footer video, .contact-panel img, .contact-panel video){ display: block; max-width: 100%; }
+
+@font-face{
+    font-family: 'Neue Montreal';
+    src: url('/fonts/NeueMontreal-Bold.woff2') format('woff2');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+  }
+  /* ============================================================
+     FOOTER (full-screen, video background, accent-blue)
+     ============================================================ */
+  .footer{
+    position: relative;
+    min-height: 100svh;
+    background: #000;
+    display: flex; flex-direction: column; justify-content: space-between;
+    gap: clamp(24px, 4vh, 64px);
+    padding: max(24px, 1.67vw) max(24px, 1.67vw) max(16px, 1.11vw);
+    overflow: hidden;
+    color: var(--accent);
+    font-weight: 800;
+  }
+  .footer__bg-video{
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; opacity: .8; z-index: 0; pointer-events: none;
+    filter: grayscale(35%) contrast(1.05);
+  }
+  .footer__scrim{
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: linear-gradient(0deg, rgba(0,0,0,.5), rgba(0,0,0,.5)),
+                linear-gradient(0deg, rgba(0,0,0,.55), rgba(0,0,0,.55));
+  }
+  .footer__top{
+    position: relative; z-index: 2;
+    border-top: max(5px, .35vw) solid var(--accent);
+    padding-top: max(24px, 1.67vw);
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;
+  }
+  .footer__title{
+    font-size: clamp(40px, 7.24vw, 104px);
+    letter-spacing: -.03em; line-height: .95;
+    color: var(--accent); max-width: 60%;
+  }
+  .footer__year{
+    font-size: clamp(64px, 16.24vw, 234px);
+    letter-spacing: -.05em; line-height: 1;
+    color: var(--accent); flex-shrink: 0;
+  }
+  .footer__middle{
+    position: relative; z-index: 2; flex: 1;
+    display: flex; justify-content: space-between; align-items: center; gap: 24px;
+  }
+  .footer__contacts{
+    display: flex; flex-direction: column; align-items: flex-end; text-align: right;
+    gap: clamp(6px, 1.2vh, 14px);
+  }
+  .footer__contacts a{
+    font-size: clamp(12px, .88vw, 13px);
+    letter-spacing: -.02em; line-height: 1;
+    color: var(--accent); transition: opacity .2s ease, transform .25s ease;
+  }
+  .footer__contacts a:hover{ opacity: .7; transform: translateX(-6px); }
+  .footer__nav{
+    position: relative; z-index: 2;
+    display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+    gap: clamp(6px, 1.2vh, 14px);
+  }
+  .footer__nav a{
+    font-size: clamp(12px, .88vw, 13px);
+    letter-spacing: -.02em; line-height: 1;
+    color: var(--accent); transition: opacity .2s ease, transform .25s ease;
+  }
+  .footer__nav a:hover{ opacity: .7; transform: translateX(6px); }
+  .footer__body{
+    position: relative; z-index: 2;
+    display: flex; flex-direction: column; gap: clamp(20px, 3vw, 32px);
+  }
+  .footer__cta-block{ display: flex; flex-direction: column; gap: clamp(16px, 2vw, 24px); }
+  .footer__cta-text{
+    font-size: clamp(18px, 2.24vw, 32px);
+    letter-spacing: -.03em; line-height: 1.1;
+    color: var(--accent); max-width: 60%;
+  }
+  .footer__cta-button{
+    width: 100%;
+    background: var(--accent); color: #000;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: clamp(12px, 1vw, 16px) max(24px, 1.67vw);
+    min-height: clamp(64px, 6.25vw, 90px);
+    cursor: pointer; overflow: hidden; text-align: left;
+    transition: opacity .2s ease;
+  }
+  .footer__cta-button:hover{ opacity: .88; }
+  .footer__cta-button-label{
+    font-size: clamp(20px, 2.24vw, 32px);
+    letter-spacing: -.03em; line-height: 1; color: #000;
+  }
+  .footer__cta-button-arrow{
+    width: clamp(20px, 1.67vw, 24px); height: clamp(20px, 1.67vw, 24px); flex-shrink: 0;
+    transition: transform .25s ease;
+  }
+  .footer__cta-button:hover .footer__cta-button-arrow{ transform: translateX(4px); }
+  .footer__cta-button-arrow svg{ width: 100%; height: 100%; display: block; }
+  .footer__bottom{
+    display: flex; justify-content: space-between; align-items: flex-end;
+    gap: 24px; flex-wrap: wrap;
+  }
+  .footer__logo{ display: block; flex-shrink: 0; margin-left: calc(max(28px, 2vw) * -0.713); }
+  .footer__logo img{ height: max(28px, 2vw); width: auto; max-width: none; }
+  .footer__links, .footer__address, .footer__copyright{
+    font-size: clamp(12px, .88vw, 13px);
+    letter-spacing: -.02em; color: var(--accent);
+  }
+  .footer__links{ display: flex; gap: clamp(10px, 1.11vw, 16px); flex-wrap: wrap; line-height: 1; }
+  .footer__links a{ transition: opacity .2s ease; }
+  .footer__links a:hover, .footer__address a:hover{ opacity: .7; }
+  .footer__links .underline{ text-decoration: underline; }
+  .footer__address{ line-height: 1.4; text-align: left; }
+  .footer__address p{ margin: 0; }
+  .footer__copyright{ line-height: 1; text-align: right; }
+
+  /* ============================================================
+     CONTACT PANEL (lead form) — lives OUTSIDE #scroll-container
+     because position:fixed inside a transformed element breaks
+     ============================================================ */
+  .contact-backdrop{
+    position: fixed; inset: 0; background: rgba(0,0,0,.8);
+    z-index: 1001; display: none;
+  }
+  .contact-backdrop.is-open{ display: block; }
+  .contact-panel{
+    display: none; flex-direction: column;
+    position: fixed; bottom: 0; right: 0;
+    left: max(80px, 9.86vw);
+    max-height: calc(100vh - clamp(24px, 4vh, 60px));
+    background: #c4c4c4; color: #000;
+    z-index: 1002; overflow-y: hidden;
+    font-family: var(--type); font-weight: 800;
+  }
+  .contact-panel.is-open{ display: flex; }
+  .contact-panel__inner{ display: flex; flex-direction: column; flex: 1; min-height: 0; }
+  .contact-panel__top-rule{
+    margin: max(24px, 1.67vw) max(24px, 1.67vw) 0;
+    border-top: 1px solid #000; flex-shrink: 0;
+  }
+  .contact-panel__header{
+    padding: max(16px, 1.11vw) max(24px, 1.67vw) 0;
+    display: flex; justify-content: flex-end; align-items: flex-start; flex-shrink: 0;
+  }
+  .contact-panel__close{
+    background: none; border: none; padding: 0; cursor: pointer;
+    font: inherit; font-size: max(20px, 1.4vw); line-height: 1;
+    letter-spacing: -.03em; color: #000;
+  }
+  .contact-panel__lead{
+    padding: min(max(32px, 2.2vw), 4vh) max(24px, 1.67vw) 0;
+    flex-shrink: 0; margin: 0;
+    font-size: max(64px, 4.44vw); line-height: .9; letter-spacing: -.05em;
+    text-indent: max(419px, 29.1vw);
+  }
+  .contact-panel__lead .muted{ color: #777; }
+  .contact-panel__lead .strong{ color: #000; }
+  .contact-panel__form{ display: flex; flex-direction: column; flex: 1; min-height: 0; }
+  .contact-panel__fields{
+    padding: min(max(48px, 3.33vw), 3vh) max(24px, 1.67vw) max(24px, 1.67vw);
+    flex: 1; overflow-y: auto; min-height: 0;
+  }
+  .contact-field__row{ display: flex; align-items: flex-start; }
+  .contact-field__num{
+    width: max(419px, 29.1vw); flex-shrink: 0;
+    font-size: max(20px, 1.4vw); line-height: 1; letter-spacing: -.03em;
+    padding: max(12px, .83vw) 0;
+  }
+  .contact-field__body{
+    flex: 1; display: flex; align-items: flex-start;
+    padding: max(12px, .83vw) 0;
+    border-bottom: .75px solid #000;
+    gap: max(20px, 1.39vw);
+  }
+  .contact-field__label{
+    flex-shrink: 0; width: max(160px, 11.1vw);
+    font-size: max(20px, 1.4vw); line-height: 1; letter-spacing: -.03em;
+  }
+  .contact-field__input-wrap{ flex: 5; position: relative; }
+  .contact-field__placeholder{
+    font-size: max(20px, 1.4vw); line-height: 1; letter-spacing: -.03em;
+    color: #777; pointer-events: none;
+    position: absolute; top: 0; left: 0; white-space: nowrap;
+  }
+  .contact-field__input-wrap.has-value .contact-field__placeholder{ display: none; }
+  .contact-field__input, .contact-field__textarea{
+    width: 100%; background: transparent; border: none; outline: none;
+    font: inherit; font-size: max(20px, 1.4vw); line-height: 1; letter-spacing: -.03em;
+    color: #000; padding: 0; appearance: none; -webkit-appearance: none;
+  }
+  .contact-field__textarea{ resize: none; display: block; }
+  .contact-field__body--message{ border-bottom: none; }
+  .contact-field__input-wrap--message{ min-height: 72px; }
+  .contact-field__placeholder--message{ white-space: normal; }
+  .contact-field__service{
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    width: 100%; background: none; border: 0; padding: 0; cursor: pointer;
+    font: inherit; text-align: left;
+  }
+  .contact-field__service-label{
+    font-size: max(20px, 1.4vw); line-height: 1; letter-spacing: -.03em; color: #777;
+  }
+  .contact-field__service.has-value .contact-field__service-label{ color: #000; }
+  .contact-field__plus{ font-size: max(20px, 1.4vw); line-height: 1; color: #000; }
+  .contact-field__options{ display: none; flex-direction: column; gap: 10px; padding-top: 14px; }
+  .contact-field__options.is-open{ display: flex; }
+  .contact-field__options button{
+    text-align: left; font: inherit; font-size: max(18px, 1.2vw);
+    letter-spacing: -.03em; line-height: 1; color: #000; padding: 0;
+  }
+  .contact-field__options button:hover{ color: #777; }
+  .contact-panel__submit{
+    display: flex; justify-content: space-between; align-items: center;
+    padding: max(20px, 1.39vw) max(24px, 1.67vw);
+    margin: 8px max(24px, 1.67vw) max(16px, 1.1vw);
+    background: var(--accent); border: none; cursor: pointer; flex-shrink: 0; overflow: hidden;
+    font: inherit; transition: opacity .2s ease;
+  }
+  .contact-panel__submit:hover{ opacity: .88; }
+  .contact-panel__submit-label{
+    display: block; font-size: max(20px, 1.4vw); line-height: 1; letter-spacing: -.03em; color: #000;
+  }
+  .contact-panel__submit-arrow{ width: max(24px, 1.67vw); height: max(24px, 1.67vw); flex-shrink: 0; }
+  .contact-panel__submit-arrow svg{ width: 100%; height: 100%; display: block; }
+
+  @media (max-width: 768px){
+    .footer{ min-height: 100svh; padding: 20px 16px 16px; gap: 28px; }
+    .footer__top{ flex-direction: column; align-items: flex-start; gap: 8px; padding-top: 16px; border-top-width: 4px; }
+    .footer__title{ font-size: clamp(36px, 11vw, 56px); max-width: 100%; }
+    .footer__year{ font-size: clamp(56px, 20vw, 96px); align-self: flex-end; }
+    .footer__middle{ align-items: flex-end; }
+    .footer__cta-text{ max-width: 100%; }
+    .footer__cta-button{ min-height: 64px; padding: 14px 18px; }
+    .footer__bottom{ flex-direction: column; align-items: flex-start; gap: 16px; }
+    .footer__copyright{ text-align: left; }
+    .contact-panel{ left: 0; top: 0; height: 100vh; height: 100dvh; max-height: 100dvh; padding-top: env(safe-area-inset-top, 0px); }
+    .contact-panel__top-rule{ margin: 12px 16px 0; }
+    .contact-panel__header{ padding: 12px 16px 0; }
+    .contact-panel__close{ font-size: 16px; padding: 10px 16px; background: #000; color: #fff; border-radius: 999px; }
+    .contact-panel__lead{ font-size: clamp(28px, 7vw, 44px); text-indent: 0; padding-top: 24px; }
+    .contact-panel__fields{ padding: 24px 16px; }
+    .contact-field__num{ width: 40px; font-size: 14px; }
+    .contact-field__body{ flex-direction: column; gap: 8px; padding: 14px 0; }
+    .contact-field__label{ width: auto; font-size: 16px; }
+    .contact-field__input-wrap{ width: 100%; }
+    .contact-field__placeholder, .contact-field__input, .contact-field__textarea, .contact-field__service-label, .contact-field__plus{ font-size: 16px; white-space: normal; }
+    .contact-field__placeholder--message{ position: static; margin-bottom: 8px; }
+    .contact-field__input-wrap--message{ min-height: 80px; }
+    .contact-panel__submit{ margin: 8px 16px 16px; padding: 18px 20px; }
+    .contact-panel__submit-label{ font-size: 20px; }
+  }
+
